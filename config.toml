@@ -1,3 +1,18 @@
-languageCode = "en-us"
+languageCode = "en"
 title = "Tony Lawrence"
 baseurl = "http://tonylawrence.com"
+
+theme = "hemingway"
+copyright = "&copy; <a href=\"https://github.com/tonyklawrence\">Tony Lawrence</a> 2017 - Waffly Bollocks"
+disqusShortname = "tonylawrence"
+googleAnalytics = ""
+
+[params]
+
+[params.highlight]
+style = "darcula"
+languages = ["java"]
+
+[[params.social]]
+url = "https://github.com/tonyklawrence"
+fa_icon = "fa-github"
