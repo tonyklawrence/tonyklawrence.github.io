@@ -1,11 +1,3 @@
-[submodule "public"]
-	path = public
-	url = https://github.com/tonyklawrence/tonyklawrence.github.io.hugo.git
-	branch = master
-[submodule "content/post"]
-	path = content/post
-	url = https://github.com/tonyklawrence/tonyklawrence.github.io.hugo.git
-	branch = posts
 [submodule "themes/hemingway"]
 	path = themes/hemingway
 	url = https://github.com/tanksuzuki/hemingway.git
@@ -14,3 +6,11 @@
 	path = static/images
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
 	branch = images
+[submodule "public"]
+	path = public
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
+	branch = master
+[submodule "content/post"]
+	path = content/post
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
+	branch = posts
