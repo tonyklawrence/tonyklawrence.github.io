@@ -6,3 +6,7 @@
 	path = content/post
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.hugo.git
 	branch = posts
+[submodule "themes/hemingway"]
+	path = themes/hemingway
+	url = https://github.com/tanksuzuki/hemingway.git
+	branch = master
