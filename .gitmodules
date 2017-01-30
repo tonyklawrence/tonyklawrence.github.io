@@ -1,0 +1,8 @@
+[submodule "public"]
+	path = public
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.hugo.git
+	branch = master
+[submodule "content/post"]
+	path = content/post
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.hugo.git
+	branch = posts
