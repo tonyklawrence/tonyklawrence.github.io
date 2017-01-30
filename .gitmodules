@@ -10,3 +10,7 @@
 	path = themes/hemingway
 	url = https://github.com/tanksuzuki/hemingway.git
 	branch = master
+[submodule "static/images"]
+	path = static/images
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
+	branch = images
