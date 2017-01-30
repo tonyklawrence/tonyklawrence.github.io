@@ -11,8 +11,24 @@ googleAnalytics = ""
 
 [params.highlight]
 style = "darcula"
-languages = ["java"]
+languages = ["java", "kotlin", "scala", "bash", "shell", "haskell"]
 
 [[params.social]]
 url = "https://github.com/tonyklawrence"
 fa_icon = "fa-github"
+
+[[params.social]]
+url = "https://github.com/tonyklawrence"
+fa_icon = "fa-bitbucket"
+
+[[params.social]]
+url = "https://twitter.com/tonyklawrence"
+fa_icon = "fa-twitter"
+
+[[params.social]]
+url = "https://twitter.com/tonyklawrence"
+fa_icon = "fa-linkedin"
+
+[[params.social]]
+url = "/index.xml"
+fa_icon = "fa-rss" 
