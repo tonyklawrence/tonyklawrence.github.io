@@ -7,6 +7,8 @@ hugo # if using a theme, replace by `hugo -t <yourtheme>`
 
 # Go To Public folder
 cd public
+# Remove git config from static
+rm -rf static/images/.git
 # Add changes to git.
 git add -A
 
