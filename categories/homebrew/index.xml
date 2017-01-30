@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Homebrew on Tony Lawrence</title>
+    <link>http://tonylawrence.com/categories/homebrew/index.xml</link>
+    <description>Recent content in Homebrew on Tony Lawrence</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
+    <atom:link href="http://tonylawrence.com/categories/homebrew/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Installing Homebrew on OSX Mavericks</title>
+      <link>http://tonylawrence.com/post/unix/installing-homebrew/</link>
+      <pubDate>Tue, 31 Dec 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/post/unix/installing-homebrew/</guid>
+      <description>&lt;p&gt;I choose to install all my applications via &lt;a href=&#34;http://brew.sh&#34;&gt;Homebrew&lt;/a&gt;.  It&amp;rsquo;s easy to install, easy to update, works well for me and has all the required packages including everything required for Haskell.  Installing Homebrew is as easy as running the following command in terminal[^brew]:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;You will be required to enter your administrator password and might be asked to install Apples Xcode developer tools and also Git versioning tool.  This is easy in Mavericks as the UI will prompt you for any requirements.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-xcode.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-git.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://tonylawrence.com/images/unix/download-homebrew.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-homebrew.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://tonylawrence.com/images/unix/homebrew-installed.png&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+&lt;/p&gt;
+
+&lt;p&gt;After all the requirements are met and everything is downloaded and installed you will be requested to run &lt;code&gt;brew doctor&lt;/code&gt; to complete the installation, you should see something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;==&amp;gt; Installation successful!
+You should run `brew doctor&#39; *before* you install anything.
+Now type: brew help
+$ brew doctor
+Your system is ready to brew.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For more information visit the Homebrew wiki: &lt;a href=&#34;http://github.com/Homebrew/homebrew/wiki&#34;&gt;http://github.com/Homebrew/homebrew/wiki&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

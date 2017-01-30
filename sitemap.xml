@@ -2,7 +2,134 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://tonylawrence.com/post/haskell/configure/</loc>
+    <lastmod>2014-01-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/unix/installing-homebrew/</loc>
+    <lastmod>2013-12-31T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/unix/backing-up-readynas/</loc>
+    <lastmod>2012-09-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/java/grouping-collections/</loc>
+    <lastmod>2012-08-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/unix/fixing-corrupted-time-machine-backups/</loc>
+    <lastmod>2012-08-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/blog/publishing-from-the-icloud/</loc>
+    <lastmod>2012-08-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/blog/setting-up-octopress-on-osx/</loc>
+    <lastmod>2012-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/java/fluent-guava/</loc>
+    <lastmod>2012-05-31T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/java/lambda-magic/</loc>
+    <lastmod>2012-01-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/java/the-totally-lazy-way/</loc>
+    <lastmod>2012-01-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/java/modern-java/</loc>
+    <lastmod>2011-12-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/backup/</loc>
+    <lastmod>2012-09-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/functional_programming/</loc>
+    <lastmod>2014-01-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/haskell/</loc>
+    <lastmod>2014-01-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/homebrew/</loc>
+    <lastmod>2013-12-31T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/java/</loc>
+    <lastmod>2012-08-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/octopress/</loc>
+    <lastmod>2012-08-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/osx/</loc>
+    <lastmod>2013-12-31T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/post/</loc>
+    <lastmod>2014-01-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/readynas/</loc>
+    <lastmod>2012-09-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/tdd/</loc>
+    <lastmod>2012-08-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://tonylawrence.com/</loc>
+    <lastmod>2014-01-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://tonylawrence.com/categories/unix/</loc>
+    <lastmod>2012-09-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
