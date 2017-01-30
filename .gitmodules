@@ -6,10 +6,6 @@
 	path = static/images
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
 	branch = images
-[submodule "public"]
-	path = public
-	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
-	branch = master
 [submodule "content/post"]
 	path = content/post
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
