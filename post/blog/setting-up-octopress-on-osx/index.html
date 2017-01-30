@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting up Octopress | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">August 1, 2012</h2>
+    <h1 class="title">Setting up Octopress</h1>
+    <div class="content">
+      
+
+<p>When upgrading to Mountain Lion I decided to replace my existing Wordpress site with a static one.  There were many reasons for this.  With Wordpress I was unable to easily version control my posts into GitHub.  I also had no control over and backup strategies.  One of my colleagues - <a href="http://baddotrobot.com">Toby Weston</a> - was running Octopress so I thought I&rsquo;d take a look.</p>
+
+<!-- more -->
+
+<p>Octopress is based upon Jekyll, developed and used by GitHub.com.  It uses Ruby to generate a static site, this can them be published to a multiple of hosting solutions, I have decided to use GitHub pages.  It looks elegant and can be customised using themes or changing the styles yourself (if you are familiar with html/sass.)  There are also many available plugins to extend the functionality of the site.</p>
+
+<p>Unfortunately, even the latest, greatest OSX 10.8 does not come with all the tools Octopress requires.</p>
+
+<h4 id="requirements-not-met-by-mountain-lion">Requirements not met by Mountain Lion</h4>
+
+<ul>
+<li>Ruby version is out of date, requires &gt;= 1.9.3</li>
+<li>Ruby Bundler is missing</li>
+</ul>
+
+<p>You&rsquo;d think it would be very easy to upgrade Ruby, I found out that this was not the case.  The easiest way is to use a tool named RVM (ruby version manager) but this is only currently available in source for which needs compiling.  Don&rsquo;t worry, this is quite trivial once you have the tools at hand.</p>
+
+<h4 id="tools-required-by-rvm">Tools required by RVM</h4>
+
+<ul>
+<li>Some sort of C compiler (if you have Xcode, you&rsquo;ll be ok)</li>
+</ul>
+
+<p>If like me you like to keep your mac clutter free you&rsquo;ll never be happy installing the mammoth Xcode.  There is a solution, Apple have separated out their developer tools into a small packages that is quick to download and install.</p>
+
+<h3 id="installation">Installation</h3>
+
+<p>So, let&rsquo;s get on with the setup.  First we can install those command line tools from: <a href="https://developer.apple.com/downloads/index.action">Apple Developer Tools</a></p>
+
+<p>Next we install the Ruby Version Manager:</p>
+
+<pre><code class="language-bash">$ bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+</code></pre>
+
+<p>And use it to update Ruby.  I&rsquo;m going to update to the latest version available at the time of writing, this is 1.9.3.</p>
+
+<blockquote>
+<p>to start using RVM in your current terminal session you need to run:</p>
+
+<p><code>source ~/.rvm/scripts/rvm</code></p>
+</blockquote>
+
+<pre><code class="language-bash">$ rvm install 1.9.3
+</code></pre>
+
+<blockquote>
+<p>if you choose version &lt;= 1.9.2 you must specify &ndash;with-gcc=clang otherwise it will not install.</p>
+</blockquote>
+
+<h3 id="setup">Setup</h3>
+
+<p>Ok, that&rsquo;s our Mac up to date, now it&rsquo;s time to look at Octopress.</p>
+
+<p>Octopress lives on GitHub so it&rsquo;s really easy for us to pull our own version and keep up with the latest enhancements.  Decide where you want it to live then clone yourself a copy.</p>
+
+<pre><code class="language-bash">$ git clone git://github.com/imathis/octopress.git &lt;dir&gt;
+$ cd &lt;dir&gt;
+</code></pre>
+
+<blockquote>
+<p>you&rsquo;ll be asked if you trust the .rvmrc file, all this will do is switch to the required version of Ruby.  If you didn&rsquo;t install ruby 1.9.3 you will need to update the .rvmrc to require your version to prevent any warnings.</p>
+</blockquote>
+
+<pre><code class="language-bash">$ ruby --version # should report your Ruby version &gt;= 1.9.3
+</code></pre>
+
+<p>Once we&rsquo;ve installed the required bundler we are ready to go.</p>
+
+<pre><code class="language-bash">$ gem install bundler
+$ bundle install
+</code></pre>
+
+<p>Install the default Octopress theme</p>
+
+<pre><code class="language-bash">$ rake install
+</code></pre>
+
+<p>This will create 2 directories, one for sass and another for source.  We should now commit these into out repository.</p>
+
+<pre><code class="language-bash">$ git add sass source
+$ git commit -m &quot;Added initial theme&quot;
+</code></pre>
+
+<h3 id="rewards">Rewards</h3>
+
+<p>And now we can run up a local version to test the install.  Run the following command and head to <a href="http://localhost:4000">http://localhost:4000</a> to see your new Octopress site.</p>
+
+<pre><code class="language-bash">$ rake preview
+</code></pre>
+
+<p>You now have a full install of Octopress and can start blogging.  I&rsquo;d advise you to head over to their deployment site for options and guides on how to publish.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modern Java - The Totally Lazy Way | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">January 1, 2012</h2>
+    <h1 class="title">Modern Java - The Totally Lazy Way</h1>
+    <div class="content">
+      
+
+<p>A few weeks ago I blogged about <a href="/post/java/modern-java/">Modern Java</a> using Googles Guava to write functional programs. One of the comments on that blog was by a good friend on mine Franck Rasolo. He suggested I took a look at <a href="https://github.com/bodar/totallylazy">Totally Lazy</a> by <a href="http://dan.bodar.com">Daniel Bodart</a> as an alternative to Guava. So I decided to implement the same functional calculator I wrote in the previous post using totally lazy instead and here are my findings.</p>
+
+<!-- more -->
+
+<h3 id="how-does-totallylazy-compare-to-guava">How does TotallyLazy compare to Guava?</h3>
+
+<p>Assuming we have a list of numbers defined:</p>
+
+<pre><code class="language-java">List&lt;Integer&gt; numbers = asList(2, 4, 6, 8, 10);
+</code></pre>
+
+<h4 id="guava">Guava</h4>
+
+<p>Imagine we want to halve each of the values, using the Guava API we can transform the values simply with an anonymous implementation of the <code>Function&lt;F, T&gt;</code> interface.</p>
+
+<pre><code class="language-java">transform(numbers, new Function&lt;Integer, Integer&gt;() {
+    public Integer apply(Integer from) {
+        return from / 2;
+    }
+});
+</code></pre>
+
+<p>Obviously this isn&rsquo;t very pretty but we can hide this away in a named implementation with a suitably named factory method to give us something like:</p>
+
+<pre><code class="language-java">transform(numbers, intoHalfTheirValue());
+</code></pre>
+
+<p>I won&rsquo;t go into detail here on how you can write a named function with a descriptive factory method but please check out the previous post if you&rsquo;d like to know this.</p>
+
+<p>As you can see the Guava solution is simple, neat and very easy to understand. So how can Totally Lazy improve on this?</p>
+
+<h4 id="totally-lazy">Totally Lazy</h4>
+
+<p>One of the first changes when using Totally Lazy is that we no longer work with standard Java <code>Lists</code>, but with <code>Sequences</code>. This might sound like a bad thing to you but using a sequence offers us a more natural functional style to the code, and it&rsquo;s also very easy to convert from a <code>List</code> into a <code>Sequence</code> and back.</p>
+
+<pre><code class="language-java">Sequence&lt;Integer&gt; sequence = sequence(numbers);
+List&lt;Integer&gt; list = sequence.toList();
+</code></pre>
+
+<p>Using this sequence we can now map our numbers into new numbers in a similar way to Guava however instead of implementing the <code>Function</code> interface we now implement Totally Lazy&rsquo;s <code>Callable1&lt;Input, Output&gt;</code> interface.</p>
+
+<pre><code class="language-java">sequence.map(new Callable1&lt;Integer, Integer&gt;() {
+    public Integer call(Integer from) throws Exception {
+        return from / 2;
+    }
+});
+</code></pre>
+
+<p>And showing a cleaner call with a factory</p>
+
+<pre><code class="language-java">sequence.map(intoHalfTheirValue());
+</code></pre>
+
+<p>As you&rsquo;ll have noticed that the implementation of <code>Function&lt;T, F&gt;</code> and <code>Callable1&lt;Input, Output&gt;</code> are almost identical, only the method name differs from <code>apply()</code> to <code>call()</code>.  The main benefit of using the <code>Sequence</code> api is that we can now use method chaining (and lambdas which I&rsquo;ll describe in a following post.)</p>
+
+<p>So to conclude with a Totally Lazy implementation of the functional calculator from the previous post showing method chaining</p>
+
+<pre><code class="language-java">public class TotallyLazyFunctionalCalculator implements Calculator {
+
+    public List&lt;Integer&gt; calculate(List&lt;Integer&gt; input) {
+        return calculate(sequence(input)).toList();
+    }
+    
+    private Sequence&lt;Integer&gt; calculate(Sequence&lt;Integer&gt; input) {
+        return input
+            .map(intoEvenNumber())
+            .map(halfIfMultipleOfFour())
+            .map(addThreeIfContainsNumberTwo());
+    }
+}
+</code></pre>
+
+<p>I think going forward I will be using Totally Lazy over Guava as it feels more natural, nesting transforms in Guava is a little noisy.</p>
+
+<p>In my next post I&rsquo;ll talk about using <a href="https://github.com/hraberg/enumerable">Enumerable Java</a> to allow us to use lambda expressions directly in Java.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

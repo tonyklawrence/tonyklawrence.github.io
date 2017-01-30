@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grouping collections in Java | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">August 15, 2012</h2>
+    <h1 class="title">Grouping collections in Java</h1>
+    <div class="content">
+      
+
+<p>Recently I came across some code that was iterating over collections in order to group them by certain fields.  This code was repeated a few times as it was grouping more than once.  To me this seemed very verbose and a little hard to understand.  As Guava was the available library and one that does not include any grouping I decided to have a go myself.</p>
+
+<!-- more -->
+
+<h2 id="the-iterative-approach">The iterative approach</h2>
+
+<pre><code class="language-java">Map&lt;Character, List&lt;String&gt;&gt; group = newHashMap();
+List&lt;String&gt; strings = asList(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;);
+
+for (String string : strings) {
+    Character firstCharacter = string.charAt(0);
+    
+    if (group.containsKey(firstCharacter)) {
+        group.get(firstCharacter).add(string);
+    } else {
+        group.put(firstCharacter, asList(string));
+    }
+}
+</code></pre>
+
+<h2 id="the-idea">The idea</h2>
+
+<p>Some functional languages do allow you to group items based upon a field such as the group by in Scala.  Here&rsquo;s a quick example.</p>
+
+<pre><code class="language-java">val strings = &quot;one&quot; :: &quot;two&quot; :: &quot;three&quot; :: Nil
+val groups = strings groupBy (_.charAt(0))
+</code></pre>
+
+<h2 id="the-specification">The specification</h2>
+
+<p>To design the grouping I drove this from how I wanted to use it.  The simplest way to do this is from a test.  This allows me to flesh out the design as well as prove it works (and also to know when I am done.)  Simple JUnit tests will suffice.</p>
+
+<blockquote>
+<p>I&rsquo;m using enumerable-java to reduce noise in my Java code (see <a href="/2012/01/10/lambda-magic/">Lambda Magic?</a>) along with this λ trick for Guava</p>
+</blockquote>
+
+<pre><code class="language-java">@NewLambda
+private static &lt;F, T&gt; Function&lt;F, T&gt; λ(F from, T to) {
+    throw new LambdaWeavingNotEnabledException();
+}
+</code></pre>
+
+<p>This defines a method named <code>λ</code> which can be used as a lambda function with guava as the default enumerable implementation returns a <code>Callable</code> for <a href="https://github.com/bodar/totallylazy">Totally Lazy</a></p>
+
+<h3 id="the-test">The Test</h3>
+
+<pre><code class="language-java">@Test
+public void groupAListOfStrings_byTheirFirstLetter() {
+    List&lt;String&gt; strings = asList(&quot;apples&quot;, &quot;apricots&quot;, &quot;oranges&quot;);
+
+    Map&lt;Character, Collection&lt;String&gt;&gt; grouping = group(strings, λ(s, s.charAt(0));
+
+    assertThat(grouping.size(), is(2));
+    assertThat(grouping.keySet(), contains('a', 'o'));
+    assertThat(grouping.get('a'), contains(&quot;apples&quot;, &quot;apricots&quot;));
+    assertThat(grouping.get('o'), contains(&quot;oranges&quot;));
+}
+</code></pre>
+
+<p>It&rsquo;s pretty obvious to see that we are grouping these strings by their first letter, <code>a</code> for apples and apricots, <code>o</code> for oranges.  We have a number of assertions to make sure that the group is how we expected.</p>
+
+<h2 id="the-implementation">The implementation</h2>
+
+<p>Now we have our specification we can start to implement the function.  Our test has already given us our signature.</p>
+
+<pre><code class="language-java">Map&lt;Character, Collection&lt;String&gt;&gt; group(Collection&lt;String&gt; strings, Function&lt;Character, String&gt; function);
+</code></pre>
+
+<p>Now we can simply iterate over the given list, applying the given function and placing them in the result (using Guava&rsquo;s <a href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/collect/ListMultimap.html">ListMultimap</a> for ease.</p>
+
+<pre><code class="language-java">ListMultimap&lt;Character, String&gt; groups = ArrayListMultimap.create();
+
+for (String string : string)
+    groups.put(function.apply(string), string);
+
+return groups.asMap();
+</code></pre>
+
+<p>Great, we have a simple function that can group our list of strings by their first character.  Unfortunately this isn&rsquo;t very generic and if we wanted a different type of grouping this would not work.  Let&rsquo;s try another test to help us make this more usable.</p>
+
+<pre><code class="language-java">private static Person Rod = aPerson(&quot;Rod&quot;, 50);
+private static Person Jane = aPerson(&quot;Jane&quot;, 21);
+private static Person Freddy = aPerson(&quot;Freddy&quot;, 50);
+
+@Test
+public void groupPeople_byAge() {
+    List&lt;Person&gt; people = asList(Rod, Jane, Freddy);
+
+    Map&lt;Integer, Collection&lt;Person&gt;&gt; groups = group(people, λ(p, p.age()));
+
+    assertThat(groups.size(), is(2));
+    assertThat(groups.keySet(), contains(21, 50));
+    assertThat(groups.get(21), contains(Jane));
+    assertThat(groups.get(50), contains(Rod, Freddy));
+}
+
+class Person {
+    public static Person aPerson(String name, Integer age) {
+        return new Person(name, age);
+    }
+
+    private Person(String name, Integer age) {
+        this.name = name,
+        this.age = age;
+    }
+
+    public Integer age() { return age };
+}
+</code></pre>
+
+<p>Now we need a generic signature for our group function.  Here&rsquo;s what I came up with.</p>
+
+<pre><code class="language-java">&lt;Group, Item&gt; Map&lt;Group, Collection&lt;Item&gt;&gt; group(Collection&lt;Item&gt; items, Function&lt;Item, Group&gt; grouping);
+</code></pre>
+
+<p>It&rsquo;s a shame that trying to make this readable makes a huge long signature.  I admit I could have just used <code>G</code> and <code>I</code> instead of <code>Group</code> and <code>Item</code> however I do feel this explains the usage more.</p>
+
+<p>Also, I was quite pleased at how close my Java implementation came out to the original Scala.  It wasn&rsquo;t the intention, I just wanted to make it readable.</p>
+
+<ul>
+<li>Group a list of strings by their first character in Java</li>
+</ul>
+
+<pre><code class="language-java">group(strings, λ(s, s.charAt(0));
+</code></pre>
+
+<ul>
+<li>Group a list of string by their first character in Scala</li>
+</ul>
+
+<pre><code class="language-scala">strings groupBy (_.charAt(0))
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I found the group function very useful, especially when creating reports.  I do realise that I wanted to remove iteration/duplication and the new <code>group()</code> function iterates, maybe this could be further improved with tail recursion.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

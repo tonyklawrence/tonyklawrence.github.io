@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixing corrupted time machine backups | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">August 11, 2012</h2>
+    <h1 class="title">Fixing corrupted time machine backups</h1>
+    <div class="content">
+      
+
+<p>Yesterday my MacBook Air decided that it no longer trusted my Time Machine backup and wanted to create a new one.  Apart from the time this would take (20gb over WiFi) and the fact that I&rsquo;d lose my current history I was a little bit wary so declined.  Unfortunately this was not a the last I heard of it.  Time Machine refused to back up until I started a new back up.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/time-machine-error.png" />
+    
+    
+</figure>
+
+
+<!-- more -->
+
+<h3 id="some-digging">Some digging</h3>
+
+<p>Firstly, I&rsquo;m not using an Apple Time Capsule for my backups, I&rsquo;ve a nice ReadyNAS Ultra for this purpose.  I reached for Google and began searching.  I found many articles talking about being unable to backup, find the drive and even backup errors but not many describing a fix to my problem.  I did however come across a post by <a href="http://www.garth.org/archives/2011,08,27,169,fix-time-machine-sparsebundle-nas-based-backup-errors.html">Garth Gillespie</a> detailing a solution.  He describes how to mount the backup and run a file system check to repair and problems.</p>
+
+<p>This could save the day.  But it&rsquo;s never that simple is it?  For me I was unable to fix the file system due to being forced to mount it read-only.  I needed to find out a way to mount it read-write before I could continue.</p>
+
+<h3 id="mounting-the-file-system-to-allow-writing">Mounting the file system to allow writing</h3>
+
+<p>I must admit, once I&rsquo;d figured out the magic commands the rest was easy.  I followed Garths steps and it worked.  I&rsquo;ll detail my steps below (for my record more than anything else.)</p>
+
+<pre><code class="language-bash">$ sudo su -
+</code></pre>
+
+<p>Before you start, make sure you don&rsquo;t have Time Machine enabled or any of the Time Machine drives mounted, we will do this manually.</p>
+
+<pre><code class="language-bash">$ mkdir /Volumes/TimeMachine
+$ mount_afp afp://ReadyNAS:&lt;pass&gt;@&lt;ip-address&gt;/ReadyNAS /Volumes/TimeMachine
+</code></pre>
+
+<p>Now we have mounted our share we can start to access the individual Time Machine bundle.  Let&rsquo;s reset and dirty flags.</p>
+
+<blockquote>
+<p>Sometimes the Sparse bundle folder is mark as &ldquo;bad&rdquo; and cannot be mounted read-write, this is solved using the following - thanks David!</p>
+</blockquote>
+
+<pre><code class="language-bash">$ chflags -R nouchg /Volumes/TimeMachine/&lt;my-backup&gt;.sparsebundle
+</code></pre>
+
+<p>And then we can attach it with the following.</p>
+
+<pre><code class="language-bash">$ hdiutil attach -nomount -readwrite -noverify -noautofsck /Volumes/TimeMachine/&lt;my-backup&gt;.sparsebundle
+</code></pre>
+
+<p>After executing the above command I got the following output.  It&rsquo;s the last entry we are interested in, the <code>Apple_HFS</code> partition.</p>
+
+<pre><code class="language-bash">/dev/disk2          	GUID_partition_scheme
+/dev/disk2s1        	EFI
+/dev/disk2s2        	Apple_HFS
+</code></pre>
+
+<p>Now we have access to the sparse bundle as a device we can run a file system check and correct any errors (replace with the device listed for you.)</p>
+
+<blockquote>
+<p>I used to try a file system check with <code>fsck_hfs</code> but ran into many &ldquo;device busy&rdquo; errors.  A little digging I tried the <code>diskutil</code> command which seemed to work instead.</p>
+
+<p><del>#fsck_hfs -drfy /dev/disk2s2</del></p>
+</blockquote>
+
+<pre><code class="language-bash">$ diskutil repairVolume /dev/disk2s2
+</code></pre>
+
+<p>This might take a while, especially if you are doing this over WiFi.  During this process, make sure your Mac does not go to sleep.  Once finished all that there is left is to clean up.  We have to inform Time Machine that the backup has been verified, this is by a small edit to it&rsquo;s <code>plist</code> file.  This lives inside the sparsebundle we mounted in <code>/Volumes/TimeMachine</code> and is called <code>com.apple.TimeMachine.MachineID.plist</code>.  I&rsquo;m going to use <code>vi</code> for this but you can use any editor you choose.</p>
+
+<pre><code class="language-bash">$ cd /Volumes/TimeMachine/&lt;my-backup&gt;.sparsebundle
+$ vi com.apple.TimeMachine.MachineID.plist
+</code></pre>
+
+<p>Now, we need to remove the following two lines to hide the fact that Time Machine has already rejected the backup.</p>
+
+<pre><code class="language-xml">&lt;key&gt;RecoveryBackupDeclinedDate&lt;/key&gt;
+&lt;date&gt;some-data&lt;/date&gt;
+</code></pre>
+
+<p>And then we change the state of the verification from failed (<code>2</code>), to passed (<code>0</code>).  Change</p>
+
+<pre><code class="language-xml">&lt;key&gt;VerificationState&lt;/key&gt;
+&lt;integer&gt;2&lt;/integer&gt;
+</code></pre>
+
+<p>to</p>
+
+<pre><code class="language-xml">&lt;key&gt;VerificationState&lt;/key&gt;
+&lt;integer&gt;0&lt;/integer&gt;
+</code></pre>
+
+<p>Finally, issue the two following commands and we are done.</p>
+
+<pre><code class="language-bash">$ hdiutil detach /dev/disk2s2
+$ umount /Volumes/TimeMachine
+</code></pre>
+
+<p>Now re-enable Time Machine and let it backup.  Fingers crossed it will verify that the backup is ok and continue where it left off preserving your existing history.</p>
+
+<h3 id="a-little-script">A little script</h3>
+
+<h4 id="thanks-to-jacco-hoeve-for-help-with-some-automation">Thanks to Jacco Hoeve for help with some automation!</h4>
+
+<p>This is setup for ReadyNAS users so assumes your share is called ReadyNAS.  Create a file named <code>repair.sh</code> and copy the below into it.</p>
+
+<pre><code class="language-bash">if [[ $(whoami) != 'root' ]]; then
+    exit 1
+fi
+
+read -p 'Enter Time Machine Hostname: ' HOSTNAME
+read -s -p 'Enter Password: ' PASSWORD
+
+TM_NAME=$(hostname -s | sed -e 's/-/ /g')
+MOUNT=/Volumes/TimeMachine
+SPARSEBUNDLE=$MOUNT/$TM_NAME.sparsebundle
+PLIST=$SPARSEBUNDLE/com.apple.TimeMachine.MachineID.plist
+
+echo &quot;Disabling Time Machine&quot;
+tmutil disable
+
+echo &quot;Mounting volume&quot;
+mkdir $MOUNT
+mount_afp afp://ReadyNAS:$PASSWORD@$HOSTNAME/ReadyNAS $MOUNT
+
+echo &quot;Changing file and folder flags&quot;
+chflags -R nouchg &quot;$SPARSEBUNDLE&quot;
+
+echo &quot;Attaching sparse bundle&quot;
+DISK=`hdiutil attach -nomount -readwrite -noverify -noautofsck &quot;$SPARSEBUNDLE&quot; | grep Apple_HFS | cut -f 1`
+
+echo &quot;Repairing volume&quot;
+#diskutil repairVolume $DISK
+/sbin/fsck_hfs -fry $DISK
+
+echo &quot;Fixing Properties&quot;
+cp &quot;$PLIST&quot; &quot;$PLIST.backup&quot;
+sed -e '/RecoveryBackupDeclinedDate/{N;d;}'   \
+    -e '/VerificationState/{n;s/2/0/;}'       \
+    &quot;$PLIST.backup&quot; \
+    &gt; &quot;$PLIST&quot;
+
+echo &quot;Unmounting volumes&quot;
+hdiutil detach /dev/$DISK
+umount $MOUNT
+
+echo &quot;Enabling Time Machine&quot;
+tmutil enable
+
+echo &quot;Starting backup&quot;
+tmutil startbackup
+
+exit 0
+</code></pre>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuring your Haskell environment | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">January 1, 2014</h2>
+    <h1 class="title">Configuring your Haskell environment</h1>
+    <div class="content">
+      
+
+<p>My love of functional programming has been getting stronger over the past year so I decided to attend <a href="http://www.well-typed.com/">Well-Typed</a> Haskell courses at Skills Matters<sup class="footnote-ref" id="fnref:wt"><a rel="footnote" href="#fn:wt">1</a></sup>.  As I&rsquo;m a huge fan of JetBrains <a href="http://www.jetbrains.com/idea/">IntelliJ</a> IDE I found using Haskell a little lacking in this area (unless you can be online with <a href="http://www.fpcomplete.com/">FP Complete</a>.)</p>
+
+<p>In this article I will explain how I configured my Haskell development environment using Sublime Text 3 and a few extras.</p>
+
+<!-- more -->
+
+<h2 id="installing-haskell-via-homebrew-brew">Installing Haskell (via Homebrew<sup class="footnote-ref" id="fnref:brew"><a rel="footnote" href="#fn:brew">2</a></sup>)</h2>
+
+<p>If you need to, take a look at my post on how to <a href="/2013/12/31/installing-homebrew-on-osx-mavericks/">Install Homebrew</a>.  It&rsquo;s not actually very hard at all.</p>
+
+<p>Once you have Homebrew up and running it&rsquo;s very simple to install Haskell (although it might take a while to complete.)</p>
+
+<pre><code class="language-bash">$ brew install haskell-platform
+==&gt; Installing dependencies for haskell-platform: apple-gcc42,,ghc
+==&gt; Installing haskell-platform dependency: apple-gcc42
+==&gt; Downloading https://downloads.sf.net/project/machomebrew/Bottles/apple-gcc42
+######################################################################## 100.0%
+==&gt; Pouring apple-gcc42-4.2.1-5666.3.mavericks.bottle.2.tar.gz
+==&gt; Summary
+  /usr/local/Cellar/apple-gcc42/4.2.1-5666.3: 104 files, 75M
+==&gt; Installing haskell-platform dependency: ghc
+==&gt; Downloading https://downloads.sf.net/project/machomebrew/Bottles/ghc-7.6.3.m
+######################################################################## 100.0%
+==&gt; Pouring ghc-7.6.3.mavericks.bottle.2.tar.gz
+==&gt; Caveats
+This brew is for GHC only; you might also be interested in haskell-platform.
+==&gt; Summary
+  /usr/local/Cellar/ghc/7.6.3: 5286 files, 776M
+==&gt; Installing haskell-platform
+==&gt; Downloading http://lambda.haskell.org/platform/download/2013.2.0.0/haskell-p
+######################################################################## 100.0%
+==&gt; ./configure --prefix=/usr/local/Cellar/haskell-platform/2013.2.0.0
+==&gt; make install
+==&gt; Caveats
+Run `cabal update` to initialize the package list.
+
+If you are replacing a previous version of haskell-platform, you may want 
+to unregister packages belonging to the old version. You can find broken
+packages using:
+  ghc-pkg check --simple-output
+You can uninstall them using:
+  ghc-pkg check --simple-output | xargs -n 1 ghc-pkg unregister --force
+==&gt; Summary
+  /usr/local/Cellar/haskell-platform/2013.2.0.0: 1463 files, 232M, built in 24.5 minutes
+</code></pre>
+
+<p>As requested I also run <code>cabal update</code> to initialise the package list.</p>
+
+<pre><code class="language-bash">$ cabal update
+Config file path source is default config file.
+Config file /Users/tony/.cabal/config not found.
+Writing default configuration to /Users/tony/.cabal/config
+Downloading the latest package list from hackage.haskell.org
+</code></pre>
+
+<p>Then check that it&rsquo;s all working correctly.</p>
+
+<pre><code class="language-bash">$ ghci
+GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Prelude&gt; 2+2
+4
+Prelude&gt; :t 4
+4 :: Num a =&gt; a
+Prelude&gt; 
+Leaving GHCi.
+</code></pre>
+
+<h2 id="installing-sublime-text-3">Installing Sublime Text 3</h2>
+
+<p>Sublime Text 3 is currently still in beta.  I have been using it for a while and have not come across any problems which is why I can highly recommend giving it a go.  It can be downloaded from <a href="http://www.sublimetext.com/3">http://www.sublimetext.com/3</a>.  Once downloaded, open the DMG file and copy to your Applications folder.  On starting you will be greeted with the following:</p>
+
+
+<figure >
+    
+        <img src="/images/haskell/sublime-text-3.png" />
+    
+    
+</figure>
+
+
+<p>If you like sublime please purchase a license to allow the developers to keep supporting this great application<sup class="footnote-ref" id="fnref:buy"><a rel="footnote" href="#fn:buy">3</a></sup>.</p>
+
+<h2 id="configuring-sublime-text-for-haskell">Configuring Sublime Text for Haskell</h2>
+
+<p>To allow us to fully use the power of Sublime Text we need to install Package Control.  This will allow us to use the Haskell package later.  Full instructions on installation can be found on the <a href="http://sublime.wbond.net/installation">Package Control Site</a>.  A quick overview follows.</p>
+
+<h3 id="installing-the-package-control">Installing the Package Control</h3>
+
+<p>Whilst in Sublime Text type <code>ctrl+`</code> to open up the console and paste the following:</p>
+
+<pre><code class="language-python">import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())
+</code></pre>
+
+<p>The output in the console will probably look something like this:</p>
+
+<pre><code class="language-bash">reloading plugin Package Control.Package Control
+found 2 files for base name Main.sublime-menu
+Package Control: No updated packages
+</code></pre>
+
+<p>If you don&rsquo;t want to trust the script you can follow the manual instructions on the package control website.</p>
+
+<h3 id="installing-sublimehaskell-package">Installing SublimeHaskell Package</h3>
+
+<p>SublimeHaskell<sup class="footnote-ref" id="fnref:sublimehaskell"><a rel="footnote" href="#fn:sublimehaskell">4</a></sup> is a github hosted project which adds support for many things.  I mainly use it to auto-compile the edited file on save and easily running a Haskell program from the editor.  Full instructions are available at the <a href="http://github.com/SublimeHaskell/SublimeHaskell">SublimeHaskell</a> project site.  Below I will show how I got everything working.</p>
+
+<p>There are a few packages that need to be installed for this package to work.  Using <code>cabal</code> makes this easy (although it might take a while.</p>
+
+<pre><code class="language-bash">$ cabal install aeson haskell-src-exts haddock hdevtools
+</code></pre>
+
+<p>Now, to install the package in Sublime Text 3 you can type <code>cmd-shift-P</code> to open up the search window.  Type in <code>install</code> to locate the install package option and select it.  You should see  in the status bar that it is going to the repository to find available packages.</p>
+
+
+<figure >
+    
+        <img src="/images/haskell/install-package.png" />
+    
+    
+</figure>
+
+
+<p>Next type in <code>haskell</code> to locate the SublimeHaskell package and select it.</p>
+
+
+<figure >
+    
+        <img src="/images/haskell/install-sublimehaskell.png" />
+    
+    
+</figure>
+
+
+<p>The status bar should indicate that it is installing the package and when it is completed.  Lastly we need to configure the package to use hdevtools as this isn&rsquo;t the default behaviour.</p>
+
+<p>From the menu choose <code>Preferences</code> -&gt; <code>Package Settings</code> -&gt; <code>SublimeHaskell</code> -&gt; <code>Settings - User</code> to open up the user settings.  Now paste the following into that file and save making sure you replace <code>&lt;username&gt;</code> with your username.</p>
+
+<pre><code class="language-json">{
+  &quot;enable_ghc_mod&quot;: false,
+  &quot;enable_hdevtools&quot;: true,
+  &quot;add_to_PATH&quot;: [ &quot;/Users/&lt;username&gt;/.cabal/bin&quot; ]
+}
+</code></pre>
+
+<p>A restart is then required.</p>
+
+<p>You can now enter your Haskell code into Sublime Text, make sure you have the Haskell build system selected and then type <code>cmd-B</code> to save, build and execute the code!</p>
+
+
+<figure >
+    
+        <img src="/images/haskell/haskell-program.png" />
+    
+    
+</figure>
+
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:wt"><a href="http://skillsmatter.com/course/scala/well-typed-advanced-haskell">Well-Typed Advanced Haskell by Andres Löh</a>
+ <a class="footnote-return" href="#fnref:wt"><sup>[return]</sup></a></li>
+<li id="fn:brew"><a href="http://brew.sh">Homebrew</a>
+ <a class="footnote-return" href="#fnref:brew"><sup>[return]</sup></a></li>
+<li id="fn:buy"><a href="https://www.sublimetext.com/buy">Support Sublime Text</a>
+ <a class="footnote-return" href="#fnref:buy"><sup>[return]</sup></a></li>
+<li id="fn:sublimehaskell"><a href="http://github.com/SublimeHaskell/SublimeHaskell">SublimeHaskell GitHub hosted project</a>
+ <a class="footnote-return" href="#fnref:sublimehaskell"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

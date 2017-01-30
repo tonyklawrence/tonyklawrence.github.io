@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modern Java | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">December 4, 2011</h2>
+    <h1 class="title">Modern Java</h1>
+    <div class="content">
+      
+
+<p>I recently attended XPDay London 2011 organised by the great eXtreme Tuesday Club and had a great 2 days.  Many of the talks I went to were more exploratory than anything but sometimes it’s a great way to learn more.  One of the early sessions was hosted by Julian Kelsey <a href="http://www.twitter.com/scrawlings">@scrawlings</a> and Andrew Parker <a href="http://www.twitter.com/aparker42">@aparker42</a> and was predominately about refactoring Java into a more function style, and another by Nat Pryce <a href="http://www.twitter.com/natpryce">@natpryce</a> about test driving function programming which in the end turned into something called Modern Java.</p>
+
+<!-- more -->
+
+<p>From what I understood Modern Java was about taking a functional approach to programming and utilising libraries such as Googles Guava to produce simpler, immutable, easily tested and less coupled software (albeit at a risk of noise due to the java language.)</p>
+
+<h3 id="why-would-you-want-to-do-this-you-might-ask">Why would you want to do this you might ask?</h3>
+
+<p>Well, I’ve been working with these libraries for a few years and have realised the potential functional programming offers even to a Java developer.  Recently, I refactored some code with one of my colleagues James Bull and that process gave me the idea to write this post.  I hope to help explain how you can do this and also try to convince you that the end result is a better place to be.</p>
+
+<p>To do this we are going to need an simple example, we&rsquo;ll need to build a calculator which will do the following:</p>
+
+<ul>
+<li>Given a list of numbers&hellip;</li>
+<li>If the number is odd add 1 to make it even</li>
+<li>If the new number becomes a mutliple of 4 then halve it</li>
+<li>If the result contains a 2 then add 3</li>
+</ul>
+
+<p>Hopefully this is simple enough, but lets go through a few examples (would make good test cases)</p>
+
+<ul>
+<li>Given 1, add 1 becomes 2, is not a mutiple of 4, does contain a 2 so add 3, result 5</li>
+<li>Given 4, is even, is multiple of 4 so halve it which becomes 2,  does contains a 2 so add 3, result 5</li>
+<li>Given 7, add 1 becomes 8, is multiple of 4 so halve it which becomes 4, does not contain a 2, result 4</li>
+</ul>
+
+<h3 id="everyday-tdd-approach">Everyday TDD approach</h3>
+
+<p>If we are going to take the expected imperative TDD approach we would break the requirements down into doing the simplest thing possible so we might start off with just the first part of the example which will add 1 to odd numbers.  We might start with a test something like this (you might really start with a single number before handling a list but this is an example and don’t want it to get too long.)</p>
+
+<pre><code class="language-java">@Test
+public void addsOneToEveryOddNumber() {
+    List someNumbers = asList(1, 2, 3, 5, 17, 7, 0, 14);
+    List expectedNumber = asList(2, 2, 4, 6, 18, 8, 0, 14);
+    assertThat(calculator.calculate(someNumbers), is(equalTo(expectedNumber)));
+}
+</code></pre>
+
+<p>And the implementation of the calculator to make this pass could be:</p>
+
+<pre><code class="language-java">public List&lt;Integer&gt; calculate(List&lt;Integer&gt; input) {
+    List&lt;Integer&gt; output = new ArrayList&lt;Integer&gt;();
+
+    for (Integer number : input) {
+        if (number % 2 != 0) number++;
+        output.add(number);
+    }
+
+    return output;
+}
+</code></pre>
+
+<p>Great, we have a working test and are a third of the way through the requirements.  Next we would go onto the next part, easy.  We add a new test to check if the number is divisible by 4 we divide by 2.</p>
+
+<p>Now, if we want to use a random set of numbers as input we have to factor in the first calculation (we could just use even numbers but that’s not really a great test.)  And when testing the third case we need to factor in case 1 and 2, this is making our test cases more complicated than we need to.</p>
+
+<p>Anyway, we could end up with our calculator looking something like this (with a few methods extracted, not included for conciseness.)</p>
+
+<pre><code class="language-java">public List&lt;Integer&gt; calculate(List&lt;Integer&gt; input) {
+    List&lt;Integer&gt; output = new ArrayList&lt;Integer&gt;();
+
+    for (Integer number : input) {
+        if (odd(number)) number++;
+        if (multipleOfFour(number)) number /= 2;
+        if (containsATwo(number)) number += 3;
+        output.add(number);
+    }
+
+    return output;
+}
+</code></pre>
+
+<p>Great, it’s a nice simple, readable piece of code that has been well tested.</p>
+
+<p>Unfortunately, the test cases are quite complicated due to having to consider all 3 stages of the calculation. You could make these extracted methods public and test them but that’s breaking our encapsulation. If we decided to add a forth, we would have to change all the other tests which is not ideal.</p>
+
+<h3 id="so-how-can-a-functional-approach-help-us">So how can a functional approach help us?</h3>
+
+<p>Using a library such as <a href="https://github.com/google/guava">Guava</a> which offers us a small amount of power of functional programming, allowing us to transform, filter and find objects in lists. The guava function interface used by transform is as follows:</p>
+
+<pre><code class="language-java">public interface Function {
+    T apply(@javax.annotation.Nullable F f);
+    boolean equals(@javax.annotation.Nullable java.lang.Object o);
+}
+</code></pre>
+
+<p>By implementing the apply method we can transform the input into the required output (not required to be of the same type.)</p>
+
+<pre><code class="language-java">public Integer apply(Integer number) {
+    return number % 2 == 0 ? number : number + 1;
+}
+</code></pre>
+
+<p>This approach enables us to extract out each of our separate concerns into individual classes and test them alone. So starting at the beginning we would start with the first case of making all numbers even.</p>
+
+<pre><code class="language-java">@Test
+public void oddNumbersArePromotedToNextEvenNumber() {
+    assertThat(function.apply(27), is(28));
+    assertThat(function.apply(4), is(4));
+}
+</code></pre>
+
+<p>This way we end up with 3 functions, each doing one thing and nice simple tests. But how do we connect them together to form the calculator? We just transform the input using the new functions we’ve written (using a factory method to help reduce noise of new.)</p>
+
+<pre><code class="language-java">public List&lt;Integer&gt; calculate(List&lt;Integer&gt; input) {
+    List&lt;Integer&gt; evenNumbers = transform(input, intoEvenNumber());
+    List&lt;Integer&gt; halvedIfMultipleOfFour = transform(evenNumbers, halfIfMultipleOfFour());
+    return transform(halvedIfMultipleOfFour, addThreeIfContainsNumberTwo());
+}
+</code></pre>
+
+<p>We then have a simple test for the calculator that given a set of input we get the right output, we no longer need to test all the different edge cases, each of the processes. Adding a new condition is as simple as writing the function for it, updating the calculator test with the new output and add the transformation to the code.</p>
+
+<p>I&rsquo;ve included the full class definition of one of the functions in case you&rsquo;d like to try this yourself.</p>
+
+<pre><code class="language-java">import com.google.common.base.Function;
+
+public class HalfIfMultipleOfFour implements Function&lt;Integer, Integer&gt; {
+
+    public static HalfIfMultipleOfFour halfIfMultipleOfFour() {
+        return new HalfIfMultipleOfFour();
+    }
+
+    public Integer apply(Integer number) {
+        return multipleOfFour(number) ? number / 2 : number;
+    }
+
+    private boolean multipleOfFour(Integer number) {
+        return number % 4 == 0;
+    }
+}
+</code></pre>
+
+<p>There have been a lot of information to cover in the post, I realise that I&rsquo;ve been quite brief however I&rsquo;m happy to cover anything in more detail if you leave a comment.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluent Guava | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">May 31, 2012</h2>
+    <h1 class="title">Fluent Guava</h1>
+    <div class="content">
+      
+
+<p>It&rsquo;s been far too long since I&rsquo;ve written anything on this site.  I&rsquo;ve got plenty of topics, it&rsquo;s just finding the time to write something down.  This one comes from a comment on one of my previous posts about Guava and <a href="/post/java/modern-java/">Modern Java</a>.</p>
+
+<p>Guava has recently been upgraded to version 12 and along with this release comes the idea of a <a href="http://martinfowler.com/bliki/FluentInterface.html">Fluent Interface</a> as described by Martin Fowler and Eric Evans.  This might bring it more in line with TotallyLazy and the reason I took to the library so quickly.  I hope to introduce to you the <code>FluentIterable</code> class and show how it can improve your Java.</p>
+
+<!-- more -->
+
+<p>The first thing you&rsquo;ll notice is that like TotallyLazy we have to convert our dull Java collections into the rich collection offered by the fluent interface.  This is a simple step using the <code>from</code> class method on the interface itself.</p>
+
+<pre><code class="language-java">import static java.util.Arrays.asList;
+import static com.google.common.collect.FluentIterable.from;
+
+List&lt;Integer&gt; javaList = asList(1, 2, 3, 4, 5);
+FluentIterable&lt;Integer&gt; richList = from(javaList);
+</code></pre>
+
+<p>Now we have all the power in the <code>richList</code>.  But once again, if we need to return normal Java lists we have to convert back again.  Note: The list returned from Guava will be immutable so you can&rsquo;t go changing it afterwards (a good thing imho).</p>
+
+<pre><code class="language-java">List&lt;Integer&gt; javaList = richList.toImmutableList();
+</code></pre>
+
+<p>So now we know how to get hold of a collection using the fluent interface what can we do with it?  Well pretty much all the things we could do with Guava functions/predicates before only this time the language should read more fluently.  Let&rsquo;s take a look at an example using both the fluent interface and the old style.</p>
+
+<pre><code class="language-java">List&lt;Integer&gt; numberList = asList(1, 2, 3, 4, 5);
+
+transform(numberList, byHalf()); // old style
+        
+FluentIterable numbers = from(numberList); // fluent interface
+numbers.transform(byHalf());
+
+// assume byHalf() returns us a Guava Function&lt;Integer,Integer&gt;
+</code></pre>
+
+<p>I&rsquo;m sure you&rsquo;re thinking that the fluent interface takes more code.  And in this simple example it does because we need to enrich the standard java list.  Let&rsquo;s go for a few more examples of different operations.</p>
+
+<pre><code class="language-java">List&lt;Integer&gt; onlyEvens = numbers.filter(byEvenNumbers());
+List&lt;Integer&gt; bigNumbers = numbers.filter(bigValues());
+List&lt;Integer&gt; smallSet = numbers.limit(5);
+boolean hasLargeOnes = numbers.anyMatch(bigValues());
+
+// one of my favourites as I always find it missing
+List&lt;Integer&gt; first = numbers.first();
+</code></pre>
+
+<p>For me this reads better and the transformation operation is now on the object concerned instead of some global method somewhere inside Guava.  Lets take my previous example from Guava and TotallyLazy and compare them with the fluent interface.</p>
+
+<h3 id="guava">Guava</h3>
+
+<pre><code class="language-java">public List&lt;Integer&gt; calculate(List&lt;Integer&gt; input) {
+    List&lt;Integer&gt; evenNumbers = transform(input, intoEvenNumber());
+    List&lt;Integer&gt; halvedIfMultipleOfFour = transform(evenNumbers, halfIfMultipleOfFour());
+    return transform(halvedIfMultipleOfFour, addThreeIfContainsNumberTwo());
+}
+</code></pre>
+
+<h3 id="totally-lazy">Totally Lazy</h3>
+
+<pre><code class="language-java">private Sequence&lt;Integer&gt; calculate(Sequence&lt;Integer&gt; input) {
+    return input
+        .map(intoEvenNumber())
+        .map(halfIfMultipleOfFour())
+        .map(addThreeIfContainsNumberTwo());
+}
+</code></pre>
+
+<h3 id="guava-fluent-interface">Guava Fluent Interface</h3>
+
+<pre><code class="language-java">private FluentIterable&lt;Integer&gt; calculate(FluentIterable&lt;Integer&gt; input) {
+    return input
+        .transform(intoEvenNumber())
+        .transform(halfIfMultipleOfFour())
+        .transform(addThreeIfContainsNumberTwo());
+}
+</code></pre>
+
+<p>Not bad and very similar to the TotallyLazy example.
+We have a fluent syntax which we can replace all our old guava code with.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>So for me Guava has finally the beginning of an expressive language that allows us to apply functions to our collections.  I&rsquo;m sure there&rsquo;s more to come but this for me is a good start and means that on projects that use Guava I can hope to improve the readability of some of the code.</p>
+
+<h3 id="links">Links</h3>
+
+<ul>
+<li><a href="http://docs.guava-libraries.googlecode.com/git-history/v12.0/javadoc/index.html">Guava FluentIterable JavaDoc</a></li>
+<li><a href="https://github.com/tonyklawrence/blog-posts/tree/master/fluent-guava">Example Project on GitHub</a></li>
+</ul>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publishing from the iCloud | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">August 2, 2012</h2>
+    <h1 class="title">Publishing from the iCloud</h1>
+    <div class="content">
+      
+
+<p>I&rsquo;ve recently been using IA Writer as my markdown editor.  I love the fact that I can use any of my iDevices and that it&rsquo;s all synced in the iCloud.  But how do I access the iCloud data so that I can include it in my Octopress git repository?</p>
+
+<!-- more -->
+
+<h2 id="show-me-the-data">Show me the data</h2>
+
+<p>On Mountain Lion (and Lion I believe) all the iCloud data is hidden away in your home directory.  Each application is given it&rsquo;s own area just like iOS apps.  Check out <code>~/Library/Mobile Documents</code>, you&rsquo;ll see folders for each iCloud application that you have launched.  Your files are stored in here.</p>
+
+<p>Once you have found your editors data folder we can now create a link from here into your git repository.  Unfortunately, symbolic links are not good enough for either iCloud or git so we&rsquo;ll need to use hard links.  Mountain Lion does not ship with this tool but let&rsquo;s not worry, it&rsquo;s very easy to make our own.</p>
+
+<blockquote>
+<p>be careful, deleting from a hard link deletes from the source!</p>
+</blockquote>
+
+<h2 id="creating-hard-links">Creating hard links</h2>
+
+<p>So, at the end of this post is the complete source code to create hard links.  Copy the code into a new file named <code>hlink.c</code> and compile it.</p>
+
+<pre><code class="language-bash">$ gcc hlink.c -o hlink
+</code></pre>
+
+<p>Now we can create a hard link to link our blog posts into our iCloud documents.</p>
+
+<pre><code class="language-bash">$ hlink ~/&lt;octopress_dir&gt;/source/_posts ~/Library/Mobile\ Documents/&lt;app_dir&gt;/Documents/pages
+</code></pre>
+
+<h2 id="what-about-dropbox">What about DropBox?</h2>
+
+<p>I did a quick comparison between the iCloud integration and DropBox.  Unfortunately, DropBox seemed to be more manual regarding the syncing.  Also, if you lose your network connection (happens to me often whilst on a train) the DropBox integration moves the document to local storage and you have to manually copy back into DropBox - not a nice feature.  iCloud seems to handle this with ease and I don&rsquo;t have to install anything to get it to work.</p>
+
+<ul>
+<li>source code for hlink</li>
+</ul>
+
+<pre><code class="language-c">#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char* argv[]) {
+  if (argc != 3) {
+    fprintf(stderr, &quot;Use: hlink &lt;src_dir&gt; &lt;target_dir&gt;\n&quot;);
+    return 1;
+  }
+
+  int ret = link(argv[1], argv[2]);
+  if (ret != 0) perror(&quot;link&quot;);
+  return ret;
+}
+</code></pre>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

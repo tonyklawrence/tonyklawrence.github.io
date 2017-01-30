@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backing up and restoring a ReadyNAS Ultra | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">September 16, 2012</h2>
+    <h1 class="title">Backing up and restoring a ReadyNAS Ultra</h1>
+    <div class="content">
+      
+
+<p>I&rsquo;ve had my ReadyNAS drop of the network a couple of times, and lately has been warning me about errors on my disk 2 so I thought it was a good idea to replace that drive.  Due to the few network issues I&rsquo;ve had I decided that taking the opportunity to restore the ReadyNAS was a good idea (I had messed with it quite a bit before.)</p>
+
+<!-- more -->
+
+<p>As I have just under 3TB used my new replacement drive would be 3TB so that I could use it for backup / restore and then as a replacement to the failing 2TB drive.</p>
+
+<h2 id="initialising-the-3tb-drive-for-use">Initialising the 3TB drive for use</h2>
+
+<p>My first big headache was that the ReadyNAS would not recognise the new drive (in an icebox usb enclosure) as 3TB and would only format it to be around 800MB, this was no use.  Also, from my Mac using Disk Utility I could create a 3TB partition but unable to format it to be ext3.  So I had to use my ReadyNAS bash skills.</p>
+
+<p>Firstly I found out that <code>fdisk</code> does not support drives over 2TB so after much annoyance I gave up.  Apparently the solution is to use <code>parted</code> which does not come on the ReadyNAS.  However, a quick <code>apt-get</code> later and I&rsquo;m away (I didn&rsquo;t care about installing stuff as I was going to restore.)</p>
+
+<pre><code class="language-bash">$ apt-get install parted
+</code></pre>
+
+<h2 id="parted">Parted</h2>
+
+<p>I followed Vivek Gites excellent guide here: <a href="http://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html">http://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html</a></p>
+
+<p>I wanted a 3TB primary partition, this was to make the most of the drive.  My USB drive was available as /dev/sde.</p>
+
+<pre><code class="language-bash">$ parted /dev/sde
+GNU Parted 1.7.1
+Using /dev/sde
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)                                           
+</code></pre>
+
+<p>To create the partition</p>
+
+<pre><code class="language-bash">(parted) mklabel gpt
+(parted) unit TB
+(parted) mkpart primary 0.00TB 3.00TB
+</code></pre>
+
+<p>You can check everything is ok using the <code>print</code> command.</p>
+
+<pre><code class="language-bash">(parted) print
+
+Disk /dev/sde: 3001GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      17.4kB  3001GB  3001GB  ext3         primary       
+</code></pre>
+
+<p>To exit simple type</p>
+
+<pre><code class="language-bash">(parted) quit
+</code></pre>
+
+<p>Now we can format the partition as <code>ext3</code> (you can use <code>ext4</code> if you prefer)</p>
+
+<pre><code class="language-bash">$ mkfs.ext3 /dev/sde1 # for ext3
+$ mkfs.ext4 /dev/sde1 # for ext4
+</code></pre>
+
+<h2 id="doing-the-backup">Doing the backup</h2>
+
+<p>I decided that the easiest way to backup was to use <code>rsync</code>.  This would allow me to do small chunks at a time and also selectively restore.  I was surprised that to backup around 3TB of data (using USB and Green 5400rpm drives) took most of a weekend! (at least I could monitor the progress with the <code>rsync</code> output and <code>df -h</code>.)</p>
+
+<p>For reference, I used the following command line</p>
+
+<pre><code class="language-bash">$ rsync --progress --recursive --times --perms --human-readable &lt;source&gt; &lt;destination&gt;
+</code></pre>
+
+<h2 id="the-factory-restore">The factory restore</h2>
+
+<p>There was two options I had when resetting my ReadyNAS firmware.</p>
+
+<ul>
+<li>OS Re-Install - reinstalls the firmware from the internal flash to the disks</li>
+<li>Factory Default - resets the unit to factory settings, erases all data, resets all defaults, and reformats the disk to X-RAID2</li>
+</ul>
+
+<p>Since I had installed things I shouldn&rsquo;t the re-install would not remove this mess.  I thought if I&rsquo;m going to do it, I might as well clean it properly (it does mean I need to setup my add-ons again.)</p>
+
+<h2 id="doing-the-restore">Doing the restore</h2>
+
+<p>NetGear has a nice page for reference on how to enter the boot menu and what the options mean. <a href="http://www.readynas.com/kb/faq/boot/how_do_i_use_the_boot_menu">How do I use the Boot Menu</a></p>
+
+<p>For my ReadyNAS Ultra 4 I had to do the following to access the boot menu:</p>
+
+<ul>
+<li>Power off the unit.</li>
+<li>Using a straightened paper clip, press and hold the Reset button.</li>
+<li>Press the Power button to power on the unit.</li>
+<li>Continue to press the Reset button until the status display screen shows an boot menu message.</li>
+<li>Press the Backup button to scroll through the boot mode options.</li>
+<li>Press and release Reset button to confirm your boot menu selection.</li>
+</ul>
+
+<p>And then wait…</p>
+
+<h2 id="installing-services">Installing services</h2>
+
+<h3 id="enabling-ssh">Enabling SSH</h3>
+
+<p>First thing is to download and install the SSH access plugin.  This is done the same way as any add-on.  Once this has been installed we can <code>ssh</code> into the ReadyNAS and configure other things.  You can use the same username / password of any user you have created.</p>
+
+<blockquote>
+<p>A restart is required before you can log in</p>
+</blockquote>
+
+<h3 id="transmission">Transmission</h3>
+
+<p>Download and install the Transmission add-on from the ReadyNAS community forums.  Once installed you will see it available in your add-ons tab.</p>
+
+<blockquote>
+<p>Transmission will not start until you have set the <code>download-dir</code> in <code>settings.json</code> to a valid location</p>
+</blockquote>
+
+<h3 id="automatic">Automatic</h3>
+
+<p>Just like Transmission, download and install from the ReadyNAS comment forums and install in the same way.</p>
+
+<h2 id="customisation">Customisation</h2>
+
+<p>If you don&rsquo;t want Mac OS X to write network stores then issue the following command on each Mac OS X client.</p>
+
+<pre><code class="language-bash">$ defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+</code></pre>
+
+<h3 id="email">Email</h3>
+
+<pre><code class="language-bash">$ apt-get install courier-imap-ssl courier-maildrop courier-doc
+</code></pre>
+
+<p>You can test with <code>telnet localhost 143</code> to see if you can connect, you should expect a response like this.</p>
+
+<pre><code class="language-bash">* OK [CAPABILITY IMAP4rev1 UIDPLUS CHILDREN NAMESPACE THREAD=ORDEREDSUBJECT THREAD=REFERENCE SORT QUOTA IDLE ACL ACL2=UNION]
+Courier-IMAP ready. Copyright 1998-2005 Double Precision, Inc. See COPYING for distribution information.
+</code></pre>
+
+<p>Creating a user, location for email and then testing.</p>
+
+<pre><code class="language-bash">userdb tonylawrence.com set uid=1004 gid=50 home=/c/email mail=tonylawrence.com
+userdbpw -md5 | userdb tonylawrence.com set imappw
+makeuserdb
+</code></pre>
+
+<pre><code class="language-bash">host:/c/email# mkdir tonylawrence.com
+host:/c/email# chown tony:staff tonylawrence.com/
+host:/c/email# chmod 755 tonylawrence.com/
+</code></pre>
+
+<pre><code class="language-bash">$ telnet localhost 143
+01 LOGIN &lt;user&gt; &lt;password&gt;
+01 OK LOGIN Ok.
+</code></pre>
+
+<p>Install fetch mail and mail drop to fetch and move email into our new home.</p>
+
+<pre><code class="language-bash">$ apt-get install fetchmail courier-maildrop
+</code></pre>
+
+<p>Mail Filter is used to place different emails into different locations.  Here I move any email to <code>tonylawrence.com</code> into a different folder <code>~/.mailfilter</code>.</p>
+
+<pre><code class="language-bash">DEFAULT=&quot;/c/email&quot;
+TL=&quot;$DEFAULT/tonylawrence.com/&quot;
+
+if (/^(To|Cc|Bcc):.*@tonylawrence.com/) {
+  to $TL
+}
+
+to $DEFAULT
+</code></pre>
+
+<p>Fetchmail configuration to pull email from google mail <code>.fetchmailrc</code>.</p>
+
+<pre><code class="language-bash">set invisible
+set bouncemail
+
+poll &quot;imap.gmail.com&quot; protocol imap
+  username &quot;&lt;user@gmail.com&gt;&quot;
+  password &quot;&lt;password&gt;&quot;
+  keep
+  ssl
+  mda &quot;/usr/bin/maildrop -d &lt;user&gt;&quot;
+</code></pre>
+
+<p>Then automate the fetching via cron</p>
+
+<pre><code class="language-bash">$ export EDITOR=vi
+$ crontab -e
+
+m h  dom mon dow   command
+*/2 * * * * fetchmail --pidfile /tmp/fetchmail.pid
+#*/5 * * * * fetchmail &gt;/dev/null 2&gt;&amp;1
+</code></pre>
+
+<h3 id="avahi-icons">Avahi icons</h3>
+
+<pre><code class="language-bash">$ cd /etc/avahi/services/
+$ cat afp.service 
+&lt;?xml version=&quot;1.0&quot; standalone='no'?&gt;&lt;!--*-nxml-*--&gt;
+&lt;service-group&gt;
+  &lt;name replace-wildcards=&quot;yes&quot;&gt;%h&lt;/name&gt;
+  &lt;service&gt;
+    &lt;type&gt;_afpovertcp._tcp&lt;/type&gt;
+    &lt;port&gt;548&lt;/port&gt;
+  &lt;/service&gt;
+  &lt;service&gt;
+    &lt;type&gt;_device-info._tcp&lt;/type&gt;
+    &lt;port&gt;0&lt;/port&gt;
+    &lt;txt-record&gt;model=Macmini&lt;/txt-record&gt;
+  &lt;/service&gt;
+&lt;/service-group&gt;
+Patrician:/etc/avahi/services# cat timemachine.service 
+&lt;?xml version=&quot;1.0&quot; standalone='no'?&gt;&lt;!--*-nxml-*--&gt;
+&lt;service-group&gt;
+  &lt;name replace-wildcards=&quot;yes&quot;&gt;Time Machine&lt;/name&gt;
+  &lt;service&gt;
+    &lt;type&gt;_adisk._tcp&lt;/type&gt;
+    &lt;port&gt;9&lt;/port&gt;
+    &lt;txt-record&gt;sys=waMA=00:22:3F:AA:2C:E1,adVF=0x100&lt;/txt-record&gt;
+    &lt;txt-record&gt;dk0=adVF=0xa1,adVN=ReadyNAS,adVU=29d6becd-d614-4346-aa51-bb2f0c8fcbb2&lt;/txt-record&gt;
+  &lt;/service&gt;
+  &lt;service&gt;
+    &lt;type&gt;_device-info._tcp&lt;/type&gt;
+    &lt;port&gt;0&lt;/port&gt;
+    &lt;txt-record&gt;model=TimeCapsule&lt;/txt-record&gt;
+  &lt;/service&gt;
+&lt;/service-group&gt;
+</code></pre>
+
+<blockquote>
+<p>Had to chown admin:admin on /etc/cron.d otherwise couldn&rsquo;t create backups!</p>
+</blockquote>
+
+<h2 id="links">Links</h2>
+
+<p><a href="http://www.readynas.com/?p=4203">Root Access SSH</a>
+<a href="http://www.readynas.com/forum/viewtopic.php?f=48&amp;t=41667">Automatic</a>
+<a href="http://www.readynas.com/forum/viewtopic.php?f=48&amp;t=24272">Transmission</a>
+<a href="http://www.courier-mta.org/imap">Courier IMAP</a>
+<a href="http://www.courier-mta.org/maildrop">Courier MailDrop</a></p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+

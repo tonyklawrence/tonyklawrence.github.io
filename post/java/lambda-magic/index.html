@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lambda Magic? | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/darcula.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-linkedin"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">January 10, 2012</h2>
+    <h1 class="title">Lambda Magic?</h1>
+    <div class="content">
+      
+
+<p>I often hear people complain about Java (I’m not excluding myself from this) about how restrictive the language can be compared to others.  We all know how noisy it is when working with functional libraries.  Wouldn’t it be great if we had a lambda style syntax in Java?</p>
+
+<p>This is where <a href="https://github.com/hraberg/enumerable">Enumerable</a> for Java comes in.  This has been developed by <a href="http://ghettojedi.org/">Håkan Råberg</a> who describes the library as:</p>
+
+<blockquote>
+<p>&ldquo;Ruby/Smalltalk style internal iterators for Java 5 using bytecode transformation to capture expressions as closures.&rdquo;</p>
+</blockquote>
+
+<!-- more -->
+
+<p>What does that mean?  Using post processing (either during runtime or post compilation using (<a href="http://asm.ow2.org/">ASM</a>) we can write a simple single expression lambda (or closure) directly in our Java code.</p>
+
+<h3 id="the-example">The Example</h3>
+
+<p>As before we start off with a sequence of numbers.  Imagine we want to increment each value by 5.  A simple operation solved in an imperative manner would be something like this:</p>
+
+<pre><code class="language-java">public List&lt;Integer&gt; addFiveToEach(List&lt;Integer&gt; numbers) {
+    List&lt;Integer&gt; result = new ArrayList&lt;Integer&gt;();
+    for (Integer number : numbers) {
+        result.add(number + 5);
+    }
+    return result;
+}
+</code></pre>
+
+<p>Can’t really complain about the code above, nice and simple, but let’s see what we can improve on with enumerable java.</p>
+
+<h3 id="with-totallylazy">With TotallyLazy</h3>
+
+<p>Let me start with my new favourite TotallyLazy.  Using enumerable we can now embed a simple lamba expression right into the transformation of the number sequence (using the λ symbol.)</p>
+
+<pre><code class="language-java">public Sequence&lt;Integer&gt; addFiveToEach(Sequence&lt;Integer&gt; numbers) {
+    return numbers.map(λ(i, i + 5));
+}
+</code></pre>
+
+<p>Amazingly this compiles directly in IntelliJ without any messing about with settings, all you need is TotallyLazy and enumerable libraries in the project.  How can this be?  Well, with a couple of static imports of course!</p>
+
+<pre><code class="language-java">import static com.googlecode.totallylazy.lambda.Lambdas.λ;
+import static org.enumerable.lambda.Parameters.i;
+</code></pre>
+
+<p>This first one includes the lambda symbol into the namespace and the other includes a variable named <code>i</code> of type <code>int</code>.  There are other options for different types such as <code>s</code> for <code>String</code>, <code>c</code> for <code>Char</code> but I’ll let you have the fun finding them all out.</p>
+
+<p>Here’s an example of determining the length every string in the sequence (interestingly the input and output types do not have to be the same):</p>
+
+<pre><code class="language-java">public Sequence&lt;Integer&gt; lengthOfEach(Sequence&lt;String&gt; strings){
+    return strings.map(λ(s, s.length()));
+}
+</code></pre>
+
+<h3 id="the-caveat">The caveat</h3>
+
+<p>There is one gotcha in this.  Because this uses byte code manipulation to convert our lambda into an anonymous function for TotallyLazy, we have to execute the code using a javaagent argument such as:</p>
+
+<pre><code class="language-bash">$ java -javaagent:enumerable-java-&lt;version&gt;.jar [...]
+</code></pre>
+
+<p>(or we could post process out classes to remove the runtime dependency - please refer to the libraries documentation on this <a href="https://github.com/hraberg/enumerable#readme">here</a></p>
+
+<h3 id="with-guava">With Guava</h3>
+
+<p>Like some of my projects, you may be using Guava and do not want to switch over to TotallyLazy.  Luckily the author has allowed for this by offering a support class that will transform functions making them suitable for guava.</p>
+
+<pre><code class="language-java">import static org.enumerable.lambda.support.googlecollect.LambdaGoogleCollections.function;
+
+private List&lt;Integer&gt; addFiveToEach(List&lt;Integer&gt; numbers) {
+    return transform(numbers, function(i, i + 5));
+}
+</code></pre>
+
+<p>This works in exactly the same way (and requires javaagent) but transforms the function code into an anonymous Guava function.  Still, for simple transformations the syntax is pretty tidy.  Support for predicates and suppliers are also in there.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>I really like this idea but I have yet to really use it for any real code.  Two small things are holding me back.  Firstly is that it’s not nice running a server with the extra javaagent to manipulate the code.  Post processing during the build would be the better option but it still feels a little dirty.  Secondly, I rarely need transformations this simple, and when adding more complicated code I would also extract it out for testability and reducing noise, thus negating the need for inline lambdas.</p>
+
+<p>I still think it’s pretty cool and a great way of extending the life of Java.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
