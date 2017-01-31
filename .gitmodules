@@ -10,3 +10,7 @@
 	path = content/post
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
 	branch = posts
+[submodule "public"]
+	path = public
+	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
+	branch = master

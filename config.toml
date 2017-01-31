@@ -1,11 +1,14 @@
 languageCode = "en"
-title = "(tl) Tony Lawrence"
+title = "Tony Lawrence"
 baseurl = "http://tonylawrence.com"
 
 theme = "hemingway"
 copyright = "&copy; <a href=\"https://github.com/tonyklawrence\">Tony Lawrence</a> 2017 - Waffly Bollocks"
 disqusShortname = "tonylawrence"
 googleAnalytics = ""
+
+# Number of articles to show on the main page
+Paginate = 8
 
 [params]
 
@@ -24,10 +27,6 @@ fa_icon = "fa-bitbucket"
 [[params.social]]
 url = "https://twitter.com/tonyklawrence"
 fa_icon = "fa-twitter"
-
-[[params.social]]
-url = "https://twitter.com/tonyklawrence"
-fa_icon = "fa-linkedin"
 
 [[params.social]]
 url = "/index.xml"
