@@ -13,7 +13,7 @@ Paginate = 8
 [params]
 
 [params.highlight]
-style = "darcula"
+style = "tomorrow"
 languages = ["java", "kotlin", "scala", "bash", "shell", "haskell"]
 
 [[params.social]]
