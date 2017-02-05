@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freeing up port 80 on Synology DSM | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/tomorrow.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">February 4, 2017</h2>
+    <h1 class="title">Freeing up port 80 on Synology DSM</h1>
+    <div class="content">
+      
+
+<p>I recently purchased a new NAS for my home network.  My reliable ReadyNAS has been working flawlessly for the past 6 years and still going strong (if a little slow).  As I really wanted a NAS that would support docker containers I was drawn to the DS916+.</p>
+
+<p>So far everything has been easy to configure, launching docker containers a breeze and has generally been a great experience; apart from 1 little thing.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/synology-ds916&#43;.png" />
+    
+    
+</figure>
+
+
+<h3 id="i-want-port-80-back-please">I want port 80 back please</h3>
+
+<p>If you are reading this post you probably already know that even though Synology DSM (disk station manager) by default uses ports 5000 (http) and 5001 (https) it still steals port 80 for it&rsquo;s redirecting using nginx.</p>
+
+<blockquote>
+<p>DSM ports can be changed (and is advisable) via the web UI.</p>
+</blockquote>
+
+<p>So, after many searches and failures I&rsquo;ve come up with a solution that will free up port 80 for your own uses and does not destroy your synology.  I&rsquo;m not going to lie, you will need to <code>ssh</code> into your synology, change a few system files and even maybe pray to your favourite gods, but in the end I hope you can sit back, smile and feel rewarded that you have gained back the power of port 80 from DSM.</p>
+
+<blockquote>
+<p>Just a small note, the reason I wanted port 80 for myself is that I run <a href="https://github.com/diginc/docker-pi-hole">Pi-Hole</a> as one of my docker containers and as it&rsquo;s providing ad blocking via DNS then it needed to receive requests on port 80 to provide empty content to replace those annoying adverts.</p>
+</blockquote>
+
+<h2 id="releasing-port-80">Releasing port 80</h2>
+
+<p>First things to know is that all the configuration files for nginx (the websever DSM uses) are automatically created on every change via the UI.  So if you modify them directly, next time you switch something in the UI you changes are lost.  Damn! That’s not good.  How can we stop this from happening.</p>
+
+<p>Maybe if we change the source templates that are used by DSM to build the files it will then apply our changes every time.  I like the sound of that.</p>
+
+<blockquote>
+<p>I’ve done this on DSM 6.0 update 9.  I don’t know if I will need to re-apply this change next time I update, only time will tell.</p>
+</blockquote>
+
+<p>Ok, I’ve led you down this little route, the anticipation building and I hear you shouting “Where is this magical file!”.  Ok, I wont keep you in suspense any longer.  The file that we will be changing is:</p>
+
+<p><code>/usr/syno/share/nginx/WWWService.mustache</code></p>
+
+<blockquote>
+<p><a href="http://mustache.github.io/">mustache</a> is a simple template language.  Don’t worry, we don’t really need to understand this to do what we need to do.</p>
+</blockquote>
+
+<p>So if you open the file in your favourite editor you will see that the top should hopefully look something like this:</p>
+
+<pre><code class="language-bash">server {
+    listen 80 default_server{{#reuseport}} reuseport{{/reuseport}};
+    listen [::]:80 default_server{{#reuseport}} reuseport{{/reuseport}};
+    listen 443 default_server ssl{{#reuseport}} reuseport{{/reuseport}};
+    listen [::]:443 default_server ssl{{#reuseport}} reuseport{{/reuseport}};
+
+    server_name _;
+
+    {{&gt; /usr/syno/share/nginx/X-Accel}}
+</code></pre>
+
+<p>The headings here are listing the default secure (443) and insecure (80) ports used to listen on.  It’s as easy as replacing the port 80 with what you would like.  I’ve used port <code>81</code> however <code>8080</code> is also a good option.</p>
+
+<pre><code class="language-bash">server {
+    listen 81 default_server{{#reuseport}} reuseport{{/reuseport}};
+    listen [::]:81 default_server{{#reuseport}} reuseport{{/reuseport}};
+</code></pre>
+
+<p>Now what we have done here is changed the template used to generate the nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/control-panel.png" />
+    
+    
+</figure>
+
+
+<p>Congratulations, you have now freed port 80.</p>
+
+<blockquote>
+<p>Don’t forget, if you were accessing DSM via port 80 then you will have to update the URL with your new chosen port.</p>
+</blockquote>
+
+<h2 id="forwarding-port-80-to-your-docker-container">Forwarding port 80 to your docker container</h2>
+
+<p>So now that you have port 80 to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/reverse-proxy.png" />
+    
+    
+</figure>
+
+
+<p>What I have defined above is a rule that all traffic that going to my Synology on port 80 will be forwarded onto port 8080.  This port 8080 is then mapped in docker to my pi-hole containers port 80.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/reverse-proxy-rules.png" />
+    
+    
+</figure>
+
+
+<blockquote>
+<p>You may think it odd that I go from port 80 to 8080 and then back to 80.  The reason for this is that the docker UI will not allow me to use port 80.</p>
+</blockquote>
+
+<p>Unfortunately it isn’t quite that simple.  You see, Synology really do not want you using port 80 so they do not allow you to choose this in the UI.</p>
+
+<p>So, the second “hack” we need to do is fix this.  How I did this is by creating the rule above but with a different port <code>12345</code> and then manually updating the configuration file in a similar vane to above.  The file in question is:</p>
+
+<p><code>/usr/syno/etc/www/ReverseProxy.json</code></p>
+
+<p>This file is just a json file, unfortunately is has no formatting at all so it’s not the easiest file to read.  Here is mine (formatted so you can read it) and you can see that it shows port <code>12345</code> in the frontend section.  We can now change this to be <code>80</code> and save the file.</p>
+
+<pre><code class="language-json">{
+  &quot;64e6f8f3-6161-4e05-801b-ddb02016a166&quot; : {
+    &quot;backend&quot; : {
+      &quot;fqdn&quot; : &quot;localhost&quot;,
+      &quot;port&quot; : 8080,
+      &quot;protocol&quot; : 0
+    },
+    &quot;description&quot; : &quot;Ad Block&quot;,
+    &quot;frontend&quot; : {
+      &quot;fqdn&quot; : null,
+      &quot;https&quot; : null,
+      &quot;port&quot; : 12345,
+      &quot;protocol&quot; : 0
+    }
+  },
+  &quot;version&quot; : 1
+}
+</code></pre>
+
+<blockquote>
+<p>If you have more reverse proxy rules then this file will be much larger</p>
+</blockquote>
+
+<p>Next time your nginx files are regenerated (any change to web settings) the new port number <code>80</code> will appear in the rules rather than <code>12345</code>.</p>
+
+<h2 id="one-more-thing">One more thing</h2>
+
+<p>This is just for the security conscious.  If you run security advisor regularly and have it to check for modified files, you will see the following warning.  Don’t worry, it’s not wrong as we have modified this file.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/security-warning.png" />
+    
+    
+</figure>
+
+
+<p>You can disable this check in the applications properties but I would strongly recommend that you don’t.  For me I just ignore this warning.</p>
+
+<h3 id="final-thoughts">Final thoughts</h3>
+
+<p>I hope you find this useful, I decided to document this a I did not find any solutions on the internet about this.  I’m not suggesting this is the only way, or even that it doesn’t come with any drawbacks, but it’s currently working for me and has solved a nice problem.</p>
+
+<p>If this works for you or you even know a better way, please leave a comment below.</p>
+
+<p>Lastly, if you are editing system files please take care.  I don’t want to be responsible for anybody losing important data or having to reset their disk station.  If you are not sure what you are doing then please seek advice.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/shell.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
