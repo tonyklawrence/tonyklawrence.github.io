@@ -32,21 +32,21 @@
 
 &lt;h3 id=&#34;i-want-port-80-back-please&#34;&gt;I want port 80 back please&lt;/h3&gt;
 
-&lt;p&gt;If you are reading this post you probably already know that even though Synology DSM (disk station manager) by default uses ports 5000 (http) and 5001 (https) it still steals port 80 for it&amp;rsquo;s redirecting using nginx.&lt;/p&gt;
+&lt;p&gt;If you are reading this post you probably already know that even though Synology DSM (disk station manager) by default uses ports &lt;code&gt;5000&lt;/code&gt; (http) and &lt;code&gt;5001&lt;/code&gt; (https) it still steals port &lt;code&gt;80&lt;/code&gt; for it&amp;rsquo;s redirecting using Nginx.&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;DSM ports can be changed (and is advisable) via the web UI.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;So, after many searches and failures I&amp;rsquo;ve come up with a solution that will free up port 80 for your own uses and does not destroy your synology.  I&amp;rsquo;m not going to lie, you will need to &lt;code&gt;ssh&lt;/code&gt; into your synology, change a few system files and even maybe pray to your favourite gods, but in the end I hope you can sit back, smile and feel rewarded that you have gained back the power of port 80 from DSM.&lt;/p&gt;
+&lt;p&gt;So, after many searches and failures I&amp;rsquo;ve come up with a solution that will free up port &lt;code&gt;80&lt;/code&gt; for your own uses and does not destroy your Synology.  I&amp;rsquo;m not going to lie, you will need to &lt;code&gt;ssh&lt;/code&gt; into your Synology, change a few system files and even maybe pray to your favourite gods, but in the end I hope you can sit back, smile and feel rewarded that you have gained back the power of port &lt;code&gt;80&lt;/code&gt; from DSM.&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;Just a small note, the reason I wanted port 80 for myself is that I run &lt;a href=&#34;https://github.com/diginc/docker-pi-hole&#34;&gt;Pi-Hole&lt;/a&gt; as one of my docker containers and as it&amp;rsquo;s providing ad blocking via DNS then it needed to receive requests on port 80 to provide empty content to replace those annoying adverts.&lt;/p&gt;
+&lt;p&gt;Just a small note, the reason I wanted port &lt;code&gt;80&lt;/code&gt; for myself is that I run &lt;a href=&#34;https://github.com/diginc/docker-pi-hole&#34;&gt;Pi-Hole&lt;/a&gt; as one of my docker containers and as it&amp;rsquo;s providing ad blocking via DNS then it needed to receive requests on port &lt;code&gt;80&lt;/code&gt; to provide empty content to replace those annoying adverts.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h2 id=&#34;releasing-port-80&#34;&gt;Releasing port 80&lt;/h2&gt;
 
-&lt;p&gt;First things to know is that all the configuration files for nginx (the websever DSM uses) are automatically created on every change via the UI.  So if you modify them directly, next time you switch something in the UI you changes are lost.  Damn! That’s not good.  How can we stop this from happening.&lt;/p&gt;
+&lt;p&gt;First things to know is that all the configuration files for Nginx (the web sever DSM uses) are automatically created on every change via the UI.  So if you modify them directly, next time you switch something in the UI you changes are lost.  Damn! That’s not good.  How can we stop this from happening.&lt;/p&gt;
 
 &lt;p&gt;Maybe if we change the source templates that are used by DSM to build the files it will then apply our changes every time.  I like the sound of that.&lt;/p&gt;
 
@@ -54,15 +54,19 @@
 &lt;p&gt;I’ve done this on DSM 6.0 update 9.  I don’t know if I will need to re-apply this change next time I update, only time will tell.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Ok, I’ve led you down this little route, the anticipation building and I hear you shouting “Where is this magical file!”.  Ok, I wont keep you in suspense any longer.  The file that we will be changing is:&lt;/p&gt;
+&lt;p&gt;Ok, I’ve led you down this little route, the anticipation building and I hear you shouting “Where are these magical files?”.  Ok, I wont keep you in suspense any longer.  The files that we will be changing can be found under &lt;code&gt;/usr/syno/share/nginx&lt;/code&gt; and are named:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;/usr/syno/share/nginx/WWWService.mustache&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;server.mustache&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DSM.mustache&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WWWService.mustache&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&#34;http://mustache.github.io/&#34;&gt;mustache&lt;/a&gt; is a simple template language.  Don’t worry, we don’t really need to understand this to do what we need to do.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://mustache.github.io/&#34;&gt;Mustache&lt;/a&gt; is a simple template language.  Don’t worry, we don’t really need to understand this to do what we need to do.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;So if you open the file in your favourite editor you will see that the top should hopefully look something like this:&lt;/p&gt;
+&lt;p&gt;So if you open one of the files in your favourite editor you will find a server configuration looking something like this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;server {
     listen 80 default_server{{#reuseport}} reuseport{{/reuseport}};
@@ -75,14 +79,14 @@
     {{&amp;gt; /usr/syno/share/nginx/X-Accel}}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;The headings here are listing the default secure (443) and insecure (80) ports used to listen on.  It’s as easy as replacing the port 80 with what you would like.  I’ve used port &lt;code&gt;81&lt;/code&gt; however &lt;code&gt;8080&lt;/code&gt; is also a good option.&lt;/p&gt;
+&lt;p&gt;The headings here are listing the default secure (&lt;code&gt;443&lt;/code&gt;) and insecure (&lt;code&gt;80&lt;/code&gt;) ports used to listen on.  It’s as easy as replacing the port &lt;code&gt;80&lt;/code&gt; with what you would like.  I’ve used port &lt;code&gt;81&lt;/code&gt; however &lt;code&gt;8080&lt;/code&gt; is also a good option.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;server {
     listen 81 default_server{{#reuseport}} reuseport{{/reuseport}};
     listen [::]:81 default_server{{#reuseport}} reuseport{{/reuseport}};
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Now what we have done here is changed the template used to generate the nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.&lt;/p&gt;
+&lt;p&gt;Make this change in all 3 files replacing occurrences of &lt;code&gt;80&lt;/code&gt; with your chosen port.  Now what we have done here is changed the template used to generate the Nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.&lt;/p&gt;
 
 
 &lt;figure &gt;
@@ -93,15 +97,15 @@
 &lt;/figure&gt;
 
 
-&lt;p&gt;Congratulations, you have now freed port 80.&lt;/p&gt;
+&lt;p&gt;Congratulations, you have now freed port &lt;code&gt;80&lt;/code&gt;.&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;Don’t forget, if you were accessing DSM via port 80 then you will have to update the URL with your new chosen port.&lt;/p&gt;
+&lt;p&gt;Don’t forget, if you were accessing DSM via port &lt;code&gt;80&lt;/code&gt; then you will have to update the URL with your new chosen port.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h2 id=&#34;forwarding-port-80-to-your-docker-container&#34;&gt;Forwarding port 80 to your docker container&lt;/h2&gt;
 
-&lt;p&gt;So now that you have port 80 to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.&lt;/p&gt;
+&lt;p&gt;So now that you have port &lt;code&gt;80&lt;/code&gt; to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.&lt;/p&gt;
 
 
 &lt;figure &gt;
@@ -112,7 +116,7 @@
 &lt;/figure&gt;
 
 
-&lt;p&gt;What I have defined above is a rule that all traffic that going to my Synology on port 80 will be forwarded onto port 8080.  This port 8080 is then mapped in docker to my pi-hole containers port 80.&lt;/p&gt;
+&lt;p&gt;What I have defined above is a rule that all traffic that going to my Synology on port &lt;code&gt;80&lt;/code&gt; will be forwarded onto port &lt;code&gt;8080&lt;/code&gt;.  This port &lt;code&gt;8080&lt;/code&gt; is then mapped in docker to my pi-hole containers port &lt;code&gt;80&lt;/code&gt;.&lt;/p&gt;
 
 
 &lt;figure &gt;
@@ -124,16 +128,16 @@
 
 
 &lt;blockquote&gt;
-&lt;p&gt;You may think it odd that I go from port 80 to 8080 and then back to 80.  The reason for this is that the docker UI will not allow me to use port 80.&lt;/p&gt;
+&lt;p&gt;You may think it odd that I go from port &lt;code&gt;80&lt;/code&gt; to &lt;code&gt;8080&lt;/code&gt; and then back to &lt;code&gt;80&lt;/code&gt;.  The reason for this is that the docker UI will not allow me to use port &lt;code&gt;80&lt;/code&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Unfortunately it isn’t quite that simple.  You see, Synology really do not want you using port 80 so they do not allow you to choose this in the UI.&lt;/p&gt;
+&lt;p&gt;Unfortunately it isn’t quite that simple.  You see, Synology really do not want you using port &lt;code&gt;80&lt;/code&gt; so they do not allow you to choose this in the UI.&lt;/p&gt;
 
 &lt;p&gt;So, the second “hack” we need to do is fix this.  How I did this is by creating the rule above but with a different port &lt;code&gt;12345&lt;/code&gt; and then manually updating the configuration file in a similar vane to above.  The file in question is:&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;/usr/syno/etc/www/ReverseProxy.json&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;This file is just a json file, unfortunately is has no formatting at all so it’s not the easiest file to read.  Here is mine (formatted so you can read it) and you can see that it shows port &lt;code&gt;12345&lt;/code&gt; in the frontend section.  We can now change this to be &lt;code&gt;80&lt;/code&gt; and save the file.&lt;/p&gt;
+&lt;p&gt;This file is just a json file, unfortunately is has no formatting at all so it’s not the easiest file to read.  Here is mine (formatted so you can read it) and you can see that it shows port &lt;code&gt;12345&lt;/code&gt; in the front end section.  We can now change this to be &lt;code&gt;80&lt;/code&gt; and save the file.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;{
   &amp;quot;64e6f8f3-6161-4e05-801b-ddb02016a166&amp;quot; : {
@@ -158,7 +162,7 @@
 &lt;p&gt;If you have more reverse proxy rules then this file will be much larger&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Next time your nginx files are regenerated (any change to web settings) the new port number &lt;code&gt;80&lt;/code&gt; will appear in the rules rather than &lt;code&gt;12345&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Next time your Nginx files are regenerated (any change to web settings) the new port number &lt;code&gt;80&lt;/code&gt; will appear in the rules rather than &lt;code&gt;12345&lt;/code&gt;.&lt;/p&gt;
 
 &lt;h2 id=&#34;one-more-thing&#34;&gt;One more thing&lt;/h2&gt;
 

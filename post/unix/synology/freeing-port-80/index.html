@@ -70,21 +70,21 @@
 
 <h3 id="i-want-port-80-back-please">I want port 80 back please</h3>
 
-<p>If you are reading this post you probably already know that even though Synology DSM (disk station manager) by default uses ports 5000 (http) and 5001 (https) it still steals port 80 for it&rsquo;s redirecting using nginx.</p>
+<p>If you are reading this post you probably already know that even though Synology DSM (disk station manager) by default uses ports <code>5000</code> (http) and <code>5001</code> (https) it still steals port <code>80</code> for it&rsquo;s redirecting using Nginx.</p>
 
 <blockquote>
 <p>DSM ports can be changed (and is advisable) via the web UI.</p>
 </blockquote>
 
-<p>So, after many searches and failures I&rsquo;ve come up with a solution that will free up port 80 for your own uses and does not destroy your synology.  I&rsquo;m not going to lie, you will need to <code>ssh</code> into your synology, change a few system files and even maybe pray to your favourite gods, but in the end I hope you can sit back, smile and feel rewarded that you have gained back the power of port 80 from DSM.</p>
+<p>So, after many searches and failures I&rsquo;ve come up with a solution that will free up port <code>80</code> for your own uses and does not destroy your Synology.  I&rsquo;m not going to lie, you will need to <code>ssh</code> into your Synology, change a few system files and even maybe pray to your favourite gods, but in the end I hope you can sit back, smile and feel rewarded that you have gained back the power of port <code>80</code> from DSM.</p>
 
 <blockquote>
-<p>Just a small note, the reason I wanted port 80 for myself is that I run <a href="https://github.com/diginc/docker-pi-hole">Pi-Hole</a> as one of my docker containers and as it&rsquo;s providing ad blocking via DNS then it needed to receive requests on port 80 to provide empty content to replace those annoying adverts.</p>
+<p>Just a small note, the reason I wanted port <code>80</code> for myself is that I run <a href="https://github.com/diginc/docker-pi-hole">Pi-Hole</a> as one of my docker containers and as it&rsquo;s providing ad blocking via DNS then it needed to receive requests on port <code>80</code> to provide empty content to replace those annoying adverts.</p>
 </blockquote>
 
 <h2 id="releasing-port-80">Releasing port 80</h2>
 
-<p>First things to know is that all the configuration files for nginx (the websever DSM uses) are automatically created on every change via the UI.  So if you modify them directly, next time you switch something in the UI you changes are lost.  Damn! That’s not good.  How can we stop this from happening.</p>
+<p>First things to know is that all the configuration files for Nginx (the web sever DSM uses) are automatically created on every change via the UI.  So if you modify them directly, next time you switch something in the UI you changes are lost.  Damn! That’s not good.  How can we stop this from happening.</p>
 
 <p>Maybe if we change the source templates that are used by DSM to build the files it will then apply our changes every time.  I like the sound of that.</p>
 
@@ -92,15 +92,19 @@
 <p>I’ve done this on DSM 6.0 update 9.  I don’t know if I will need to re-apply this change next time I update, only time will tell.</p>
 </blockquote>
 
-<p>Ok, I’ve led you down this little route, the anticipation building and I hear you shouting “Where is this magical file!”.  Ok, I wont keep you in suspense any longer.  The file that we will be changing is:</p>
+<p>Ok, I’ve led you down this little route, the anticipation building and I hear you shouting “Where are these magical files?”.  Ok, I wont keep you in suspense any longer.  The files that we will be changing can be found under <code>/usr/syno/share/nginx</code> and are named:</p>
 
-<p><code>/usr/syno/share/nginx/WWWService.mustache</code></p>
+<ul>
+<li><code>server.mustache</code></li>
+<li><code>DSM.mustache</code></li>
+<li><code>WWWService.mustache</code></li>
+</ul>
 
 <blockquote>
-<p><a href="http://mustache.github.io/">mustache</a> is a simple template language.  Don’t worry, we don’t really need to understand this to do what we need to do.</p>
+<p><a href="http://mustache.github.io/">Mustache</a> is a simple template language.  Don’t worry, we don’t really need to understand this to do what we need to do.</p>
 </blockquote>
 
-<p>So if you open the file in your favourite editor you will see that the top should hopefully look something like this:</p>
+<p>So if you open one of the files in your favourite editor you will find a server configuration looking something like this:</p>
 
 <pre><code class="language-bash">server {
     listen 80 default_server{{#reuseport}} reuseport{{/reuseport}};
@@ -113,14 +117,14 @@
     {{&gt; /usr/syno/share/nginx/X-Accel}}
 </code></pre>
 
-<p>The headings here are listing the default secure (443) and insecure (80) ports used to listen on.  It’s as easy as replacing the port 80 with what you would like.  I’ve used port <code>81</code> however <code>8080</code> is also a good option.</p>
+<p>The headings here are listing the default secure (<code>443</code>) and insecure (<code>80</code>) ports used to listen on.  It’s as easy as replacing the port <code>80</code> with what you would like.  I’ve used port <code>81</code> however <code>8080</code> is also a good option.</p>
 
 <pre><code class="language-bash">server {
     listen 81 default_server{{#reuseport}} reuseport{{/reuseport}};
     listen [::]:81 default_server{{#reuseport}} reuseport{{/reuseport}};
 </code></pre>
 
-<p>Now what we have done here is changed the template used to generate the nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.</p>
+<p>Make this change in all 3 files replacing occurrences of <code>80</code> with your chosen port.  Now what we have done here is changed the template used to generate the Nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.</p>
 
 
 <figure >
@@ -131,15 +135,15 @@
 </figure>
 
 
-<p>Congratulations, you have now freed port 80.</p>
+<p>Congratulations, you have now freed port <code>80</code>.</p>
 
 <blockquote>
-<p>Don’t forget, if you were accessing DSM via port 80 then you will have to update the URL with your new chosen port.</p>
+<p>Don’t forget, if you were accessing DSM via port <code>80</code> then you will have to update the URL with your new chosen port.</p>
 </blockquote>
 
 <h2 id="forwarding-port-80-to-your-docker-container">Forwarding port 80 to your docker container</h2>
 
-<p>So now that you have port 80 to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.</p>
+<p>So now that you have port <code>80</code> to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.</p>
 
 
 <figure >
@@ -150,7 +154,7 @@
 </figure>
 
 
-<p>What I have defined above is a rule that all traffic that going to my Synology on port 80 will be forwarded onto port 8080.  This port 8080 is then mapped in docker to my pi-hole containers port 80.</p>
+<p>What I have defined above is a rule that all traffic that going to my Synology on port <code>80</code> will be forwarded onto port <code>8080</code>.  This port <code>8080</code> is then mapped in docker to my pi-hole containers port <code>80</code>.</p>
 
 
 <figure >
@@ -162,16 +166,16 @@
 
 
 <blockquote>
-<p>You may think it odd that I go from port 80 to 8080 and then back to 80.  The reason for this is that the docker UI will not allow me to use port 80.</p>
+<p>You may think it odd that I go from port <code>80</code> to <code>8080</code> and then back to <code>80</code>.  The reason for this is that the docker UI will not allow me to use port <code>80</code>.</p>
 </blockquote>
 
-<p>Unfortunately it isn’t quite that simple.  You see, Synology really do not want you using port 80 so they do not allow you to choose this in the UI.</p>
+<p>Unfortunately it isn’t quite that simple.  You see, Synology really do not want you using port <code>80</code> so they do not allow you to choose this in the UI.</p>
 
 <p>So, the second “hack” we need to do is fix this.  How I did this is by creating the rule above but with a different port <code>12345</code> and then manually updating the configuration file in a similar vane to above.  The file in question is:</p>
 
 <p><code>/usr/syno/etc/www/ReverseProxy.json</code></p>
 
-<p>This file is just a json file, unfortunately is has no formatting at all so it’s not the easiest file to read.  Here is mine (formatted so you can read it) and you can see that it shows port <code>12345</code> in the frontend section.  We can now change this to be <code>80</code> and save the file.</p>
+<p>This file is just a json file, unfortunately is has no formatting at all so it’s not the easiest file to read.  Here is mine (formatted so you can read it) and you can see that it shows port <code>12345</code> in the front end section.  We can now change this to be <code>80</code> and save the file.</p>
 
 <pre><code class="language-json">{
   &quot;64e6f8f3-6161-4e05-801b-ddb02016a166&quot; : {
@@ -196,7 +200,7 @@
 <p>If you have more reverse proxy rules then this file will be much larger</p>
 </blockquote>
 
-<p>Next time your nginx files are regenerated (any change to web settings) the new port number <code>80</code> will appear in the rules rather than <code>12345</code>.</p>
+<p>Next time your Nginx files are regenerated (any change to web settings) the new port number <code>80</code> will appear in the rules rather than <code>12345</code>.</p>
 
 <h2 id="one-more-thing">One more thing</h2>
 
