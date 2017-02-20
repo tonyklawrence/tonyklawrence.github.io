@@ -13,8 +13,8 @@ Paginate = 8
 [params]
 
 [params.highlight]
-style = "tomorrow"
-languages = ["java", "kotlin", "scala", "bash", "shell", "haskell"]
+#style = "tomorrow"
+languages = ["java", "kotlin", "scala", "bash", "haskell"]
 
 [[params.social]]
 url = "https://github.com/tonyklawrence"
