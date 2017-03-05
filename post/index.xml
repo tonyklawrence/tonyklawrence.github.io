@@ -944,17 +944,23 @@ $ umount /Volumes/TimeMachine
 
 &lt;p&gt;Now re-enable Time Machine and let it backup.  Fingers crossed it will verify that the backup is ok and continue where it left off preserving your existing history.&lt;/p&gt;
 
+&lt;h3 id=&#34;update&#34;&gt;Update&lt;/h3&gt;
+
+&lt;p&gt;I’ve recently replaced my ReadyNAS with a Synology and have also had to fix the backup with this.  Luckily the script still works but the share name is different &lt;code&gt;time-machine&lt;/code&gt;.  So I’ve updated the script to ask for this information and added a download link.&lt;/p&gt;
+
 &lt;h3 id=&#34;a-little-script&#34;&gt;A little script&lt;/h3&gt;
 
 &lt;h4 id=&#34;thanks-to-jacco-hoeve-for-help-with-some-automation&#34;&gt;Thanks to Jacco Hoeve for help with some automation!&lt;/h4&gt;
 
-&lt;p&gt;This is setup for ReadyNAS users so assumes your share is called ReadyNAS.  Create a file named &lt;code&gt;repair.sh&lt;/code&gt; and copy the below into it.&lt;/p&gt;
+&lt;p&gt;This is setup for ReadyNAS users so assumes your share is called ReadyNAS.  Create a file named &lt;code&gt;repair.sh&lt;/code&gt; and copy the below into it (&lt;a href=&#34;http://tonylawrence.com/downloads/time-machine/repair.sh&#34;&gt;or download it here&lt;/a&gt;)&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;if [[ $(whoami) != &#39;root&#39; ]]; then
     exit 1
 fi
 
 read -p &#39;Enter Time Machine Hostname: &#39; HOSTNAME
+read -p &#39;Enter Share: &#39; SHARE
+read -p &#39;Enter Username: &#39; USERNAME
 read -s -p &#39;Enter Password: &#39; PASSWORD
 
 TM_NAME=$(hostname -s | sed -e &#39;s/-/ /g&#39;)
@@ -967,7 +973,7 @@ tmutil disable
 
 echo &amp;quot;Mounting volume&amp;quot;
 mkdir $MOUNT
-mount_afp afp://ReadyNAS:$PASSWORD@$HOSTNAME/ReadyNAS $MOUNT
+mount_afp afp://$USERNAME:$PASSWORD@$HOSTNAME/$SHARE $MOUNT
 
 echo &amp;quot;Changing file and folder flags&amp;quot;
 chflags -R nouchg &amp;quot;$SPARSEBUNDLE&amp;quot;
