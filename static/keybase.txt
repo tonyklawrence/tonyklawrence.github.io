@@ -1,0 +1,55 @@
+==================================================================
+https://keybase.io/tonykl
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://tonylawrence.com
+  * I am tonykl (https://keybase.io/tonykl) on keybase.
+  * I have a public key ASD67QChildfHcrv-wVBGH-qlab5iXIP-Lp-TZhmkG2THAo
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101c0aa5f51d60e9774ae6a99ff0a82677dc7a7a9a9bcfaf020e2a55e01a15578320a",
+            "host": "keybase.io",
+            "kid": "0120faed00a18a575f1dcaeffb0541187faa95a6f989720ff8ba7e4d9866906d931c0a",
+            "uid": "fc37a8869c9b1182653756112b6d1b19",
+            "username": "tonykl"
+        },
+        "merkle_root": {
+            "ctime": 1498644245,
+            "hash": "d4a22cf4ce7a5598d0f234be23453602d37d22ecbdb67681624a985f66d5024173e90e6c3836d6218c61e5f026d7bae1d43d8062a6964296b7fa359d63189ec5",
+            "hash_meta": "26b95d253c1c8a7d2508df559be4aa3172de05971e5fc3addbcac331d2281234",
+            "seqno": 1198056
+        },
+        "service": {
+            "hostname": "tonylawrence.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "client": {
+        "name": "keybase.io go client",
+        "version": "1.0.24"
+    },
+    "ctime": 1498644327,
+    "expire_in": 504576000,
+    "prev": "985c50afa485ad0b3644fc0c01b1b9934225f6b195d8b473d8f524608fdb7e11",
+    "seqno": 6,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEg+u0AoYpXXx3K7/sFQRh/qpWm+YlyD/i6fk2YZpBtkxwKp3BheWxvYWTFA0V7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTAxYzBhYTVmNTFkNjBlOTc3NGFlNmE5OWZmMGE4MjY3N2RjN2E3YTlhOWJjZmFmMDIwZTJhNTVlMDFhMTU1NzgzMjBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwZmFlZDAwYTE4YTU3NWYxZGNhZWZmYjA1NDExODdmYWE5NWE2Zjk4OTcyMGZmOGJhN2U0ZDk4NjY5MDZkOTMxYzBhIiwidWlkIjoiZmMzN2E4ODY5YzliMTE4MjY1Mzc1NjExMmI2ZDFiMTkiLCJ1c2VybmFtZSI6InRvbnlrbCJ9LCJtZXJrbGVfcm9vdCI6eyJjdGltZSI6MTQ5ODY0NDI0NSwiaGFzaCI6ImQ0YTIyY2Y0Y2U3YTU1OThkMGYyMzRiZTIzNDUzNjAyZDM3ZDIyZWNiZGI2NzY4MTYyNGE5ODVmNjZkNTAyNDE3M2U5MGU2YzM4MzZkNjIxOGM2MWU1ZjAyNmQ3YmFlMWQ0M2Q4MDYyYTY5NjQyOTZiN2ZhMzU5ZDYzMTg5ZWM1IiwiaGFzaF9tZXRhIjoiMjZiOTVkMjUzYzFjOGE3ZDI1MDhkZjU1OWJlNGFhMzE3MmRlMDU5NzFlNWZjM2FkZGJjYWMzMzFkMjI4MTIzNCIsInNlcW5vIjoxMTk4MDU2fSwic2VydmljZSI6eyJob3N0bmFtZSI6InRvbnlsYXdyZW5jZS5jb20iLCJwcm90b2NvbCI6Imh0dHA6In0sInR5cGUiOiJ3ZWJfc2VydmljZV9iaW5kaW5nIiwidmVyc2lvbiI6MX0sImNsaWVudCI6eyJuYW1lIjoia2V5YmFzZS5pbyBnbyBjbGllbnQiLCJ2ZXJzaW9uIjoiMS4wLjI0In0sImN0aW1lIjoxNDk4NjQ0MzI3LCJleHBpcmVfaW4iOjUwNDU3NjAwMCwicHJldiI6Ijk4NWM1MGFmYTQ4NWFkMGIzNjQ0ZmMwYzAxYjFiOTkzNDIyNWY2YjE5NWQ4YjQ3M2Q4ZjUyNDYwOGZkYjdlMTEiLCJzZXFubyI6NiwidGFnIjoic2lnbmF0dXJlIn2jc2lnxEB+XtJCpl/w5FkDrskxvGg7YW9uZ4Rb/zLjMUwivOII1hNCTrgUcrcwCA9lfDSDvCLy4fsQz7zA5Sf9aJqwodQEqHNpZ190eXBlIKRoYXNogqR0eXBlCKV2YWx1ZcQgWn4kRmnpztMDgNioQFDc3t/TtuksZ0mQ+68Ra8GhxdCjdGFnzQICp3ZlcnNpb24B
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/tonykl
+
+==================================================================
