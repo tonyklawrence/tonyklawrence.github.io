@@ -10,3 +10,6 @@
 	path = public
 	url = https://github.com/tonyklawrence/tonyklawrence.github.io.git
 	branch = master
+[submodule "themes/hemingway"]
+	path = themes/hemingway
+	url = https://github.com/tanksuzuki/hemingway.git
