@@ -2,12 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Osx on Tony Lawrence</title>
-    <link>http://tonylawrence.com/categories/osx/index.xml</link>
+    <link>http://tonylawrence.com/categories/osx/</link>
     <description>Recent content in Osx on Tony Lawrence</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
-    <atom:link href="http://tonylawrence.com/categories/osx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 31 Dec 2013 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://tonylawrence.com/categories/osx/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Installing Homebrew on OSX Mavericks</title>
@@ -15,67 +18,8 @@
       <pubDate>Tue, 31 Dec 2013 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/unix/installing-homebrew/</guid>
-      <description>&lt;p&gt;I choose to install all my applications via &lt;a href=&#34;http://brew.sh&#34;&gt;Homebrew&lt;/a&gt;.  It&amp;rsquo;s easy to install, easy to update, works well for me and has all the required packages including everything required for Haskell.  Installing Homebrew is as easy as running the following command in terminal[^brew]:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!-- more --&gt;
-
-&lt;p&gt;You will be required to enter your administrator password and might be asked to install Apples Xcode developer tools and also Git versioning tool.  This is easy in Mavericks as the UI will prompt you for any requirements.&lt;/p&gt;
-
-&lt;p&gt;
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-xcode.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-git.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/download-homebrew.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/install-homebrew.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/homebrew-installed.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-&lt;/p&gt;
-
-&lt;p&gt;After all the requirements are met and everything is downloaded and installed you will be requested to run &lt;code&gt;brew doctor&lt;/code&gt; to complete the installation, you should see something like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;==&amp;gt; Installation successful!
-You should run `brew doctor&#39; *before* you install anything.
-Now type: brew help
-$ brew doctor
-Your system is ready to brew.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;For more information visit the Homebrew wiki: &lt;a href=&#34;http://github.com/Homebrew/homebrew/wiki&#34;&gt;http://github.com/Homebrew/homebrew/wiki&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>I choose to install all my applications via Homebrew. It&amp;rsquo;s easy to install, easy to update, works well for me and has all the required packages including everything required for Haskell. Installing Homebrew is as easy as running the following command in terminal[^brew]:
+$ ruby -e &amp;quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&amp;quot;  You will be required to enter your administrator password and might be asked to install Apples Xcode developer tools and also Git versioning tool.</description>
     </item>
     
     <item>
@@ -84,165 +28,7 @@ Your system is ready to brew.
       <pubDate>Sat, 11 Aug 2012 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/unix/fixing-corrupted-time-machine-backups/</guid>
-      <description>
-
-&lt;p&gt;Yesterday my MacBook Air decided that it no longer trusted my Time Machine backup and wanted to create a new one.  Apart from the time this would take (20gb over WiFi) and the fact that I&amp;rsquo;d lose my current history I was a little bit wary so declined.  Unfortunately this was not a the last I heard of it.  Time Machine refused to back up until I started a new back up.&lt;/p&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/unix/time-machine-error.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;!-- more --&gt;
-
-&lt;h3 id=&#34;some-digging&#34;&gt;Some digging&lt;/h3&gt;
-
-&lt;p&gt;Firstly, I&amp;rsquo;m not using an Apple Time Capsule for my backups, I&amp;rsquo;ve a nice ReadyNAS Ultra for this purpose.  I reached for Google and began searching.  I found many articles talking about being unable to backup, find the drive and even backup errors but not many describing a fix to my problem.  I did however come across a post by &lt;a href=&#34;http://www.garth.org/archives/2011,08,27,169,fix-time-machine-sparsebundle-nas-based-backup-errors.html&#34;&gt;Garth Gillespie&lt;/a&gt; detailing a solution.  He describes how to mount the backup and run a file system check to repair and problems.&lt;/p&gt;
-
-&lt;p&gt;This could save the day.  But it&amp;rsquo;s never that simple is it?  For me I was unable to fix the file system due to being forced to mount it read-only.  I needed to find out a way to mount it read-write before I could continue.&lt;/p&gt;
-
-&lt;h3 id=&#34;mounting-the-file-system-to-allow-writing&#34;&gt;Mounting the file system to allow writing&lt;/h3&gt;
-
-&lt;p&gt;I must admit, once I&amp;rsquo;d figured out the magic commands the rest was easy.  I followed Garths steps and it worked.  I&amp;rsquo;ll detail my steps below (for my record more than anything else.)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ sudo su -
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Before you start, make sure you don&amp;rsquo;t have Time Machine enabled or any of the Time Machine drives mounted, we will do this manually.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ mkdir /Volumes/TimeMachine
-$ mount_afp afp://ReadyNAS:&amp;lt;pass&amp;gt;@&amp;lt;ip-address&amp;gt;/ReadyNAS /Volumes/TimeMachine
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we have mounted our share we can start to access the individual Time Machine bundle.  Let&amp;rsquo;s reset and dirty flags.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Sometimes the Sparse bundle folder is mark as &amp;ldquo;bad&amp;rdquo; and cannot be mounted read-write, this is solved using the following - thanks David!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ chflags -R nouchg /Volumes/TimeMachine/&amp;lt;my-backup&amp;gt;.sparsebundle
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And then we can attach it with the following.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ hdiutil attach -nomount -readwrite -noverify -noautofsck /Volumes/TimeMachine/&amp;lt;my-backup&amp;gt;.sparsebundle
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After executing the above command I got the following output.  It&amp;rsquo;s the last entry we are interested in, the &lt;code&gt;Apple_HFS&lt;/code&gt; partition.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/dev/disk2          	GUID_partition_scheme
-/dev/disk2s1        	EFI
-/dev/disk2s2        	Apple_HFS
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we have access to the sparse bundle as a device we can run a file system check and correct any errors (replace with the device listed for you.)&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;I used to try a file system check with &lt;code&gt;fsck_hfs&lt;/code&gt; but ran into many &amp;ldquo;device busy&amp;rdquo; errors.  A little digging I tried the &lt;code&gt;diskutil&lt;/code&gt; command which seemed to work instead.&lt;/p&gt;
-
-&lt;p&gt;&lt;del&gt;#fsck_hfs -drfy /dev/disk2s2&lt;/del&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ diskutil repairVolume /dev/disk2s2
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This might take a while, especially if you are doing this over WiFi.  During this process, make sure your Mac does not go to sleep.  Once finished all that there is left is to clean up.  We have to inform Time Machine that the backup has been verified, this is by a small edit to it&amp;rsquo;s &lt;code&gt;plist&lt;/code&gt; file.  This lives inside the sparsebundle we mounted in &lt;code&gt;/Volumes/TimeMachine&lt;/code&gt; and is called &lt;code&gt;com.apple.TimeMachine.MachineID.plist&lt;/code&gt;.  I&amp;rsquo;m going to use &lt;code&gt;vi&lt;/code&gt; for this but you can use any editor you choose.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cd /Volumes/TimeMachine/&amp;lt;my-backup&amp;gt;.sparsebundle
-$ vi com.apple.TimeMachine.MachineID.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, we need to remove the following two lines to hide the fact that Time Machine has already rejected the backup.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;key&amp;gt;RecoveryBackupDeclinedDate&amp;lt;/key&amp;gt;
-&amp;lt;date&amp;gt;some-data&amp;lt;/date&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And then we change the state of the verification from failed (&lt;code&gt;2&lt;/code&gt;), to passed (&lt;code&gt;0&lt;/code&gt;).  Change&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;key&amp;gt;VerificationState&amp;lt;/key&amp;gt;
-&amp;lt;integer&amp;gt;2&amp;lt;/integer&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;to&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;key&amp;gt;VerificationState&amp;lt;/key&amp;gt;
-&amp;lt;integer&amp;gt;0&amp;lt;/integer&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Finally, issue the two following commands and we are done.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ hdiutil detach /dev/disk2s2
-$ umount /Volumes/TimeMachine
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now re-enable Time Machine and let it backup.  Fingers crossed it will verify that the backup is ok and continue where it left off preserving your existing history.&lt;/p&gt;
-
-&lt;h3 id=&#34;update&#34;&gt;Update&lt;/h3&gt;
-
-&lt;p&gt;I’ve recently replaced my ReadyNAS with a Synology and have also had to fix the backup with this.  Luckily the script still works but the share name is different &lt;code&gt;time-machine&lt;/code&gt;.  So I’ve updated the script to ask for this information and added a download link.&lt;/p&gt;
-
-&lt;h3 id=&#34;a-little-script&#34;&gt;A little script&lt;/h3&gt;
-
-&lt;h4 id=&#34;thanks-to-jacco-hoeve-for-help-with-some-automation&#34;&gt;Thanks to Jacco Hoeve for help with some automation!&lt;/h4&gt;
-
-&lt;p&gt;This is setup for ReadyNAS users so assumes your share is called ReadyNAS.  Create a file named &lt;code&gt;repair.sh&lt;/code&gt; and copy the below into it (&lt;a href=&#34;http://tonylawrence.com/downloads/time-machine/repair.sh&#34;&gt;or download it here&lt;/a&gt;)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;if [[ $(whoami) != &#39;root&#39; ]]; then
-    exit 1
-fi
-
-read -p &#39;Enter Time Machine Hostname: &#39; HOSTNAME
-read -p &#39;Enter Share: &#39; SHARE
-read -p &#39;Enter Username: &#39; USERNAME
-read -s -p &#39;Enter Password: &#39; PASSWORD
-
-TM_NAME=$(hostname -s | sed -e &#39;s/-/ /g&#39;)
-MOUNT=/Volumes/TimeMachine
-SPARSEBUNDLE=$MOUNT/$TM_NAME.sparsebundle
-PLIST=$SPARSEBUNDLE/com.apple.TimeMachine.MachineID.plist
-
-echo &amp;quot;Disabling Time Machine&amp;quot;
-tmutil disable
-
-echo &amp;quot;Mounting volume&amp;quot;
-mkdir $MOUNT
-mount_afp afp://$USERNAME:$PASSWORD@$HOSTNAME/$SHARE $MOUNT
-
-echo &amp;quot;Changing file and folder flags&amp;quot;
-chflags -R nouchg &amp;quot;$SPARSEBUNDLE&amp;quot;
-
-echo &amp;quot;Attaching sparse bundle&amp;quot;
-DISK=`hdiutil attach -nomount -readwrite -noverify -noautofsck &amp;quot;$SPARSEBUNDLE&amp;quot; | grep Apple_HFS | cut -f 1`
-
-echo &amp;quot;Repairing volume&amp;quot;
-#diskutil repairVolume $DISK
-/sbin/fsck_hfs -fry $DISK
-
-echo &amp;quot;Fixing Properties&amp;quot;
-cp &amp;quot;$PLIST&amp;quot; &amp;quot;$PLIST.backup&amp;quot;
-sed -e &#39;/RecoveryBackupDeclinedDate/{N;d;}&#39;   \
-    -e &#39;/VerificationState/{n;s/2/0/;}&#39;       \
-    &amp;quot;$PLIST.backup&amp;quot; \
-    &amp;gt; &amp;quot;$PLIST&amp;quot;
-
-echo &amp;quot;Unmounting volumes&amp;quot;
-hdiutil detach /dev/$DISK
-umount $MOUNT
-
-echo &amp;quot;Enabling Time Machine&amp;quot;
-tmutil enable
-
-echo &amp;quot;Starting backup&amp;quot;
-tmutil startbackup
-
-exit 0
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <description>Yesterday my MacBook Air decided that it no longer trusted my Time Machine backup and wanted to create a new one. Apart from the time this would take (20gb over WiFi) and the fact that I&amp;rsquo;d lose my current history I was a little bit wary so declined. Unfortunately this was not a the last I heard of it. Time Machine refused to back up until I started a new back up.</description>
     </item>
     
     <item>
@@ -251,57 +37,8 @@ exit 0
       <pubDate>Thu, 02 Aug 2012 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/blog/publishing-from-the-icloud/</guid>
-      <description>
-
-&lt;p&gt;I&amp;rsquo;ve recently been using IA Writer as my markdown editor.  I love the fact that I can use any of my iDevices and that it&amp;rsquo;s all synced in the iCloud.  But how do I access the iCloud data so that I can include it in my Octopress git repository?&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;show-me-the-data&#34;&gt;Show me the data&lt;/h2&gt;
-
-&lt;p&gt;On Mountain Lion (and Lion I believe) all the iCloud data is hidden away in your home directory.  Each application is given it&amp;rsquo;s own area just like iOS apps.  Check out &lt;code&gt;~/Library/Mobile Documents&lt;/code&gt;, you&amp;rsquo;ll see folders for each iCloud application that you have launched.  Your files are stored in here.&lt;/p&gt;
-
-&lt;p&gt;Once you have found your editors data folder we can now create a link from here into your git repository.  Unfortunately, symbolic links are not good enough for either iCloud or git so we&amp;rsquo;ll need to use hard links.  Mountain Lion does not ship with this tool but let&amp;rsquo;s not worry, it&amp;rsquo;s very easy to make our own.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;be careful, deleting from a hard link deletes from the source!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&#34;creating-hard-links&#34;&gt;Creating hard links&lt;/h2&gt;
-
-&lt;p&gt;So, at the end of this post is the complete source code to create hard links.  Copy the code into a new file named &lt;code&gt;hlink.c&lt;/code&gt; and compile it.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ gcc hlink.c -o hlink
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we can create a hard link to link our blog posts into our iCloud documents.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ hlink ~/&amp;lt;octopress_dir&amp;gt;/source/_posts ~/Library/Mobile\ Documents/&amp;lt;app_dir&amp;gt;/Documents/pages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;what-about-dropbox&#34;&gt;What about DropBox?&lt;/h2&gt;
-
-&lt;p&gt;I did a quick comparison between the iCloud integration and DropBox.  Unfortunately, DropBox seemed to be more manual regarding the syncing.  Also, if you lose your network connection (happens to me often whilst on a train) the DropBox integration moves the document to local storage and you have to manually copy back into DropBox - not a nice feature.  iCloud seems to handle this with ease and I don&amp;rsquo;t have to install anything to get it to work.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;source code for hlink&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-
-int main(int argc, char* argv[]) {
-  if (argc != 3) {
-    fprintf(stderr, &amp;quot;Use: hlink &amp;lt;src_dir&amp;gt; &amp;lt;target_dir&amp;gt;\n&amp;quot;);
-    return 1;
-  }
-
-  int ret = link(argv[1], argv[2]);
-  if (ret != 0) perror(&amp;quot;link&amp;quot;);
-  return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <description>I&amp;rsquo;ve recently been using IA Writer as my markdown editor. I love the fact that I can use any of my iDevices and that it&amp;rsquo;s all synced in the iCloud. But how do I access the iCloud data so that I can include it in my Octopress git repository?
+Show me the data On Mountain Lion (and Lion I believe) all the iCloud data is hidden away in your home directory.</description>
     </item>
     
     <item>
@@ -310,100 +47,8 @@ int main(int argc, char* argv[]) {
       <pubDate>Wed, 01 Aug 2012 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/blog/setting-up-octopress-on-osx/</guid>
-      <description>
-
-&lt;p&gt;When upgrading to Mountain Lion I decided to replace my existing Wordpress site with a static one.  There were many reasons for this.  With Wordpress I was unable to easily version control my posts into GitHub.  I also had no control over and backup strategies.  One of my colleagues - &lt;a href=&#34;http://baddotrobot.com&#34;&gt;Toby Weston&lt;/a&gt; - was running Octopress so I thought I&amp;rsquo;d take a look.&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;p&gt;Octopress is based upon Jekyll, developed and used by GitHub.com.  It uses Ruby to generate a static site, this can them be published to a multiple of hosting solutions, I have decided to use GitHub pages.  It looks elegant and can be customised using themes or changing the styles yourself (if you are familiar with html/sass.)  There are also many available plugins to extend the functionality of the site.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately, even the latest, greatest OSX 10.8 does not come with all the tools Octopress requires.&lt;/p&gt;
-
-&lt;h4 id=&#34;requirements-not-met-by-mountain-lion&#34;&gt;Requirements not met by Mountain Lion&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Ruby version is out of date, requires &amp;gt;= 1.9.3&lt;/li&gt;
-&lt;li&gt;Ruby Bundler is missing&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;You&amp;rsquo;d think it would be very easy to upgrade Ruby, I found out that this was not the case.  The easiest way is to use a tool named RVM (ruby version manager) but this is only currently available in source for which needs compiling.  Don&amp;rsquo;t worry, this is quite trivial once you have the tools at hand.&lt;/p&gt;
-
-&lt;h4 id=&#34;tools-required-by-rvm&#34;&gt;Tools required by RVM&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Some sort of C compiler (if you have Xcode, you&amp;rsquo;ll be ok)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If like me you like to keep your mac clutter free you&amp;rsquo;ll never be happy installing the mammoth Xcode.  There is a solution, Apple have separated out their developer tools into a small packages that is quick to download and install.&lt;/p&gt;
-
-&lt;h3 id=&#34;installation&#34;&gt;Installation&lt;/h3&gt;
-
-&lt;p&gt;So, let&amp;rsquo;s get on with the setup.  First we can install those command line tools from: &lt;a href=&#34;https://developer.apple.com/downloads/index.action&#34;&gt;Apple Developer Tools&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Next we install the Ruby Version Manager:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ bash -s stable &amp;lt; &amp;lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And use it to update Ruby.  I&amp;rsquo;m going to update to the latest version available at the time of writing, this is 1.9.3.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;to start using RVM in your current terminal session you need to run:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;source ~/.rvm/scripts/rvm&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ rvm install 1.9.3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;if you choose version &amp;lt;= 1.9.2 you must specify &amp;ndash;with-gcc=clang otherwise it will not install.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&#34;setup&#34;&gt;Setup&lt;/h3&gt;
-
-&lt;p&gt;Ok, that&amp;rsquo;s our Mac up to date, now it&amp;rsquo;s time to look at Octopress.&lt;/p&gt;
-
-&lt;p&gt;Octopress lives on GitHub so it&amp;rsquo;s really easy for us to pull our own version and keep up with the latest enhancements.  Decide where you want it to live then clone yourself a copy.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ git clone git://github.com/imathis/octopress.git &amp;lt;dir&amp;gt;
-$ cd &amp;lt;dir&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;you&amp;rsquo;ll be asked if you trust the .rvmrc file, all this will do is switch to the required version of Ruby.  If you didn&amp;rsquo;t install ruby 1.9.3 you will need to update the .rvmrc to require your version to prevent any warnings.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ruby --version # should report your Ruby version &amp;gt;= 1.9.3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Once we&amp;rsquo;ve installed the required bundler we are ready to go.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ gem install bundler
-$ bundle install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Install the default Octopress theme&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ rake install
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This will create 2 directories, one for sass and another for source.  We should now commit these into out repository.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ git add sass source
-$ git commit -m &amp;quot;Added initial theme&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;rewards&#34;&gt;Rewards&lt;/h3&gt;
-
-&lt;p&gt;And now we can run up a local version to test the install.  Run the following command and head to &lt;a href=&#34;http://localhost:4000&#34;&gt;http://localhost:4000&lt;/a&gt; to see your new Octopress site.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ rake preview
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You now have a full install of Octopress and can start blogging.  I&amp;rsquo;d advise you to head over to their deployment site for options and guides on how to publish.&lt;/p&gt;
-</description>
+      <description>When upgrading to Mountain Lion I decided to replace my existing Wordpress site with a static one. There were many reasons for this. With Wordpress I was unable to easily version control my posts into GitHub. I also had no control over and backup strategies. One of my colleagues - Toby Weston - was running Octopress so I thought I&amp;rsquo;d take a look.
+Octopress is based upon Jekyll, developed and used by GitHub.</description>
     </item>
     
   </channel>

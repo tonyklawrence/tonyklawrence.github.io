@@ -2,12 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tdd on Tony Lawrence</title>
-    <link>http://tonylawrence.com/categories/tdd/index.xml</link>
+    <link>http://tonylawrence.com/categories/tdd/</link>
     <description>Recent content in Tdd on Tony Lawrence</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
-    <atom:link href="http://tonylawrence.com/categories/tdd/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Aug 2012 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://tonylawrence.com/categories/tdd/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Grouping collections in Java</title>
@@ -15,145 +18,8 @@
       <pubDate>Wed, 15 Aug 2012 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/java/grouping-collections/</guid>
-      <description>
-
-&lt;p&gt;Recently I came across some code that was iterating over collections in order to group them by certain fields.  This code was repeated a few times as it was grouping more than once.  To me this seemed very verbose and a little hard to understand.  As Guava was the available library and one that does not include any grouping I decided to have a go myself.&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;the-iterative-approach&#34;&gt;The iterative approach&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;Map&amp;lt;Character, List&amp;lt;String&amp;gt;&amp;gt; group = newHashMap();
-List&amp;lt;String&amp;gt; strings = asList(&amp;quot;one&amp;quot;, &amp;quot;two&amp;quot;, &amp;quot;three&amp;quot;, &amp;quot;four&amp;quot;);
-
-for (String string : strings) {
-    Character firstCharacter = string.charAt(0);
-    
-    if (group.containsKey(firstCharacter)) {
-        group.get(firstCharacter).add(string);
-    } else {
-        group.put(firstCharacter, asList(string));
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;the-idea&#34;&gt;The idea&lt;/h2&gt;
-
-&lt;p&gt;Some functional languages do allow you to group items based upon a field such as the group by in Scala.  Here&amp;rsquo;s a quick example.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;val strings = &amp;quot;one&amp;quot; :: &amp;quot;two&amp;quot; :: &amp;quot;three&amp;quot; :: Nil
-val groups = strings groupBy (_.charAt(0))
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;the-specification&#34;&gt;The specification&lt;/h2&gt;
-
-&lt;p&gt;To design the grouping I drove this from how I wanted to use it.  The simplest way to do this is from a test.  This allows me to flesh out the design as well as prove it works (and also to know when I am done.)  Simple JUnit tests will suffice.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;I&amp;rsquo;m using enumerable-java to reduce noise in my Java code (see &lt;a href=&#34;http://tonylawrence.com/2012/01/10/lambda-magic/&#34;&gt;Lambda Magic?&lt;/a&gt;) along with this λ trick for Guava&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@NewLambda
-private static &amp;lt;F, T&amp;gt; Function&amp;lt;F, T&amp;gt; λ(F from, T to) {
-    throw new LambdaWeavingNotEnabledException();
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This defines a method named &lt;code&gt;λ&lt;/code&gt; which can be used as a lambda function with guava as the default enumerable implementation returns a &lt;code&gt;Callable&lt;/code&gt; for &lt;a href=&#34;https://github.com/bodar/totallylazy&#34;&gt;Totally Lazy&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;the-test&#34;&gt;The Test&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Test
-public void groupAListOfStrings_byTheirFirstLetter() {
-    List&amp;lt;String&amp;gt; strings = asList(&amp;quot;apples&amp;quot;, &amp;quot;apricots&amp;quot;, &amp;quot;oranges&amp;quot;);
-
-    Map&amp;lt;Character, Collection&amp;lt;String&amp;gt;&amp;gt; grouping = group(strings, λ(s, s.charAt(0));
-
-    assertThat(grouping.size(), is(2));
-    assertThat(grouping.keySet(), contains(&#39;a&#39;, &#39;o&#39;));
-    assertThat(grouping.get(&#39;a&#39;), contains(&amp;quot;apples&amp;quot;, &amp;quot;apricots&amp;quot;));
-    assertThat(grouping.get(&#39;o&#39;), contains(&amp;quot;oranges&amp;quot;));
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It&amp;rsquo;s pretty obvious to see that we are grouping these strings by their first letter, &lt;code&gt;a&lt;/code&gt; for apples and apricots, &lt;code&gt;o&lt;/code&gt; for oranges.  We have a number of assertions to make sure that the group is how we expected.&lt;/p&gt;
-
-&lt;h2 id=&#34;the-implementation&#34;&gt;The implementation&lt;/h2&gt;
-
-&lt;p&gt;Now we have our specification we can start to implement the function.  Our test has already given us our signature.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;Map&amp;lt;Character, Collection&amp;lt;String&amp;gt;&amp;gt; group(Collection&amp;lt;String&amp;gt; strings, Function&amp;lt;Character, String&amp;gt; function);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we can simply iterate over the given list, applying the given function and placing them in the result (using Guava&amp;rsquo;s &lt;a href=&#34;http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/collect/ListMultimap.html&#34;&gt;ListMultimap&lt;/a&gt; for ease.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;ListMultimap&amp;lt;Character, String&amp;gt; groups = ArrayListMultimap.create();
-
-for (String string : string)
-    groups.put(function.apply(string), string);
-
-return groups.asMap();
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Great, we have a simple function that can group our list of strings by their first character.  Unfortunately this isn&amp;rsquo;t very generic and if we wanted a different type of grouping this would not work.  Let&amp;rsquo;s try another test to help us make this more usable.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;private static Person Rod = aPerson(&amp;quot;Rod&amp;quot;, 50);
-private static Person Jane = aPerson(&amp;quot;Jane&amp;quot;, 21);
-private static Person Freddy = aPerson(&amp;quot;Freddy&amp;quot;, 50);
-
-@Test
-public void groupPeople_byAge() {
-    List&amp;lt;Person&amp;gt; people = asList(Rod, Jane, Freddy);
-
-    Map&amp;lt;Integer, Collection&amp;lt;Person&amp;gt;&amp;gt; groups = group(people, λ(p, p.age()));
-
-    assertThat(groups.size(), is(2));
-    assertThat(groups.keySet(), contains(21, 50));
-    assertThat(groups.get(21), contains(Jane));
-    assertThat(groups.get(50), contains(Rod, Freddy));
-}
-
-class Person {
-    public static Person aPerson(String name, Integer age) {
-        return new Person(name, age);
-    }
-
-    private Person(String name, Integer age) {
-        this.name = name,
-        this.age = age;
-    }
-
-    public Integer age() { return age };
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we need a generic signature for our group function.  Here&amp;rsquo;s what I came up with.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;&amp;lt;Group, Item&amp;gt; Map&amp;lt;Group, Collection&amp;lt;Item&amp;gt;&amp;gt; group(Collection&amp;lt;Item&amp;gt; items, Function&amp;lt;Item, Group&amp;gt; grouping);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It&amp;rsquo;s a shame that trying to make this readable makes a huge long signature.  I admit I could have just used &lt;code&gt;G&lt;/code&gt; and &lt;code&gt;I&lt;/code&gt; instead of &lt;code&gt;Group&lt;/code&gt; and &lt;code&gt;Item&lt;/code&gt; however I do feel this explains the usage more.&lt;/p&gt;
-
-&lt;p&gt;Also, I was quite pleased at how close my Java implementation came out to the original Scala.  It wasn&amp;rsquo;t the intention, I just wanted to make it readable.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Group a list of strings by their first character in Java&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;group(strings, λ(s, s.charAt(0));
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Group a list of string by their first character in Scala&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-scala&#34;&gt;strings groupBy (_.charAt(0))
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;I found the group function very useful, especially when creating reports.  I do realise that I wanted to remove iteration/duplication and the new &lt;code&gt;group()&lt;/code&gt; function iterates, maybe this could be further improved with tail recursion.&lt;/p&gt;
-</description>
+      <description>Recently I came across some code that was iterating over collections in order to group them by certain fields. This code was repeated a few times as it was grouping more than once. To me this seemed very verbose and a little hard to understand. As Guava was the available library and one that does not include any grouping I decided to have a go myself.
+The iterative approach Map&amp;lt;Character, List&amp;lt;String&amp;gt;&amp;gt; group = newHashMap(); List&amp;lt;String&amp;gt; strings = asList(&amp;quot;one&amp;quot;, &amp;quot;two&amp;quot;, &amp;quot;three&amp;quot;, &amp;quot;four&amp;quot;); for (String string : strings) { Character firstCharacter = string.</description>
     </item>
     
   </channel>

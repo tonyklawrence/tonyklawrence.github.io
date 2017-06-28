@@ -2,12 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Haskell on Tony Lawrence</title>
-    <link>http://tonylawrence.com/categories/haskell/index.xml</link>
+    <link>http://tonylawrence.com/categories/haskell/</link>
     <description>Recent content in Haskell on Tony Lawrence</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
-    <atom:link href="http://tonylawrence.com/categories/haskell/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://tonylawrence.com/categories/haskell/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Configuring your Haskell environment</title>
@@ -15,183 +18,8 @@
       <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
       
       <guid>http://tonylawrence.com/post/haskell/configure/</guid>
-      <description>
-
-&lt;p&gt;My love of functional programming has been getting stronger over the past year so I decided to attend &lt;a href=&#34;http://www.well-typed.com/&#34;&gt;Well-Typed&lt;/a&gt; Haskell courses at Skills Matters&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:wt&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:wt&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;.  As I&amp;rsquo;m a huge fan of JetBrains &lt;a href=&#34;http://www.jetbrains.com/idea/&#34;&gt;IntelliJ&lt;/a&gt; IDE I found using Haskell a little lacking in this area (unless you can be online with &lt;a href=&#34;http://www.fpcomplete.com/&#34;&gt;FP Complete&lt;/a&gt;.)&lt;/p&gt;
-
-&lt;p&gt;In this article I will explain how I configured my Haskell development environment using Sublime Text 3 and a few extras.&lt;/p&gt;
-
-&lt;!-- more --&gt;
-
-&lt;h2 id=&#34;installing-haskell-via-homebrew-brew&#34;&gt;Installing Haskell (via Homebrew&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:brew&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:brew&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;)&lt;/h2&gt;
-
-&lt;p&gt;If you need to, take a look at my post on how to &lt;a href=&#34;http://tonylawrence.com/2013/12/31/installing-homebrew-on-osx-mavericks/&#34;&gt;Install Homebrew&lt;/a&gt;.  It&amp;rsquo;s not actually very hard at all.&lt;/p&gt;
-
-&lt;p&gt;Once you have Homebrew up and running it&amp;rsquo;s very simple to install Haskell (although it might take a while to complete.)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ brew install haskell-platform
-==&amp;gt; Installing dependencies for haskell-platform: apple-gcc42,,ghc
-==&amp;gt; Installing haskell-platform dependency: apple-gcc42
-==&amp;gt; Downloading https://downloads.sf.net/project/machomebrew/Bottles/apple-gcc42
-######################################################################## 100.0%
-==&amp;gt; Pouring apple-gcc42-4.2.1-5666.3.mavericks.bottle.2.tar.gz
-==&amp;gt; Summary
-  /usr/local/Cellar/apple-gcc42/4.2.1-5666.3: 104 files, 75M
-==&amp;gt; Installing haskell-platform dependency: ghc
-==&amp;gt; Downloading https://downloads.sf.net/project/machomebrew/Bottles/ghc-7.6.3.m
-######################################################################## 100.0%
-==&amp;gt; Pouring ghc-7.6.3.mavericks.bottle.2.tar.gz
-==&amp;gt; Caveats
-This brew is for GHC only; you might also be interested in haskell-platform.
-==&amp;gt; Summary
-  /usr/local/Cellar/ghc/7.6.3: 5286 files, 776M
-==&amp;gt; Installing haskell-platform
-==&amp;gt; Downloading http://lambda.haskell.org/platform/download/2013.2.0.0/haskell-p
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/haskell-platform/2013.2.0.0
-==&amp;gt; make install
-==&amp;gt; Caveats
-Run `cabal update` to initialize the package list.
-
-If you are replacing a previous version of haskell-platform, you may want 
-to unregister packages belonging to the old version. You can find broken
-packages using:
-  ghc-pkg check --simple-output
-You can uninstall them using:
-  ghc-pkg check --simple-output | xargs -n 1 ghc-pkg unregister --force
-==&amp;gt; Summary
-  /usr/local/Cellar/haskell-platform/2013.2.0.0: 1463 files, 232M, built in 24.5 minutes
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As requested I also run &lt;code&gt;cabal update&lt;/code&gt; to initialise the package list.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cabal update
-Config file path source is default config file.
-Config file /Users/tony/.cabal/config not found.
-Writing default configuration to /Users/tony/.cabal/config
-Downloading the latest package list from hackage.haskell.org
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then check that it&amp;rsquo;s all working correctly.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ ghci
-GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
-Loading package ghc-prim ... linking ... done.
-Loading package integer-gmp ... linking ... done.
-Loading package base ... linking ... done.
-Prelude&amp;gt; 2+2
-4
-Prelude&amp;gt; :t 4
-4 :: Num a =&amp;gt; a
-Prelude&amp;gt; 
-Leaving GHCi.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;installing-sublime-text-3&#34;&gt;Installing Sublime Text 3&lt;/h2&gt;
-
-&lt;p&gt;Sublime Text 3 is currently still in beta.  I have been using it for a while and have not come across any problems which is why I can highly recommend giving it a go.  It can be downloaded from &lt;a href=&#34;http://www.sublimetext.com/3&#34;&gt;http://www.sublimetext.com/3&lt;/a&gt;.  Once downloaded, open the DMG file and copy to your Applications folder.  On starting you will be greeted with the following:&lt;/p&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/haskell/sublime-text-3.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;p&gt;If you like sublime please purchase a license to allow the developers to keep supporting this great application&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:buy&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:buy&#34;&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
-
-&lt;h2 id=&#34;configuring-sublime-text-for-haskell&#34;&gt;Configuring Sublime Text for Haskell&lt;/h2&gt;
-
-&lt;p&gt;To allow us to fully use the power of Sublime Text we need to install Package Control.  This will allow us to use the Haskell package later.  Full instructions on installation can be found on the &lt;a href=&#34;http://sublime.wbond.net/installation&#34;&gt;Package Control Site&lt;/a&gt;.  A quick overview follows.&lt;/p&gt;
-
-&lt;h3 id=&#34;installing-the-package-control&#34;&gt;Installing the Package Control&lt;/h3&gt;
-
-&lt;p&gt;Whilst in Sublime Text type &lt;code&gt;ctrl+`&lt;/code&gt; to open up the console and paste the following:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import urllib.request,os; pf = &#39;Package Control.sublime-package&#39;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), &#39;wb&#39;).write(urllib.request.urlopen( &#39;http://sublime.wbond.net/&#39; + pf.replace(&#39; &#39;,&#39;%20&#39;)).read())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The output in the console will probably look something like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;reloading plugin Package Control.Package Control
-found 2 files for base name Main.sublime-menu
-Package Control: No updated packages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you don&amp;rsquo;t want to trust the script you can follow the manual instructions on the package control website.&lt;/p&gt;
-
-&lt;h3 id=&#34;installing-sublimehaskell-package&#34;&gt;Installing SublimeHaskell Package&lt;/h3&gt;
-
-&lt;p&gt;SublimeHaskell&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:sublimehaskell&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:sublimehaskell&#34;&gt;4&lt;/a&gt;&lt;/sup&gt; is a github hosted project which adds support for many things.  I mainly use it to auto-compile the edited file on save and easily running a Haskell program from the editor.  Full instructions are available at the &lt;a href=&#34;http://github.com/SublimeHaskell/SublimeHaskell&#34;&gt;SublimeHaskell&lt;/a&gt; project site.  Below I will show how I got everything working.&lt;/p&gt;
-
-&lt;p&gt;There are a few packages that need to be installed for this package to work.  Using &lt;code&gt;cabal&lt;/code&gt; makes this easy (although it might take a while.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$ cabal install aeson haskell-src-exts haddock hdevtools
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, to install the package in Sublime Text 3 you can type &lt;code&gt;cmd-shift-P&lt;/code&gt; to open up the search window.  Type in &lt;code&gt;install&lt;/code&gt; to locate the install package option and select it.  You should see  in the status bar that it is going to the repository to find available packages.&lt;/p&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/haskell/install-package.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;p&gt;Next type in &lt;code&gt;haskell&lt;/code&gt; to locate the SublimeHaskell package and select it.&lt;/p&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/haskell/install-sublimehaskell.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-
-&lt;p&gt;The status bar should indicate that it is installing the package and when it is completed.  Lastly we need to configure the package to use hdevtools as this isn&amp;rsquo;t the default behaviour.&lt;/p&gt;
-
-&lt;p&gt;From the menu choose &lt;code&gt;Preferences&lt;/code&gt; -&amp;gt; &lt;code&gt;Package Settings&lt;/code&gt; -&amp;gt; &lt;code&gt;SublimeHaskell&lt;/code&gt; -&amp;gt; &lt;code&gt;Settings - User&lt;/code&gt; to open up the user settings.  Now paste the following into that file and save making sure you replace &lt;code&gt;&amp;lt;username&amp;gt;&lt;/code&gt; with your username.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;{
-  &amp;quot;enable_ghc_mod&amp;quot;: false,
-  &amp;quot;enable_hdevtools&amp;quot;: true,
-  &amp;quot;add_to_PATH&amp;quot;: [ &amp;quot;/Users/&amp;lt;username&amp;gt;/.cabal/bin&amp;quot; ]
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;A restart is then required.&lt;/p&gt;
-
-&lt;p&gt;You can now enter your Haskell code into Sublime Text, make sure you have the Haskell build system selected and then type &lt;code&gt;cmd-B&lt;/code&gt; to save, build and execute the code!&lt;/p&gt;
-
-
-&lt;figure &gt;
-    
-        &lt;img src=&#34;http://tonylawrence.com/images/haskell/haskell-program.png&#34; /&gt;
-    
-    
-&lt;/figure&gt;
-
-&lt;div class=&#34;footnotes&#34;&gt;
-
-&lt;hr /&gt;
-
-&lt;ol&gt;
-&lt;li id=&#34;fn:wt&#34;&gt;&lt;a href=&#34;http://skillsmatter.com/course/scala/well-typed-advanced-haskell&#34;&gt;Well-Typed Advanced Haskell by Andres Löh&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:wt&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:brew&#34;&gt;&lt;a href=&#34;http://brew.sh&#34;&gt;Homebrew&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:brew&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:buy&#34;&gt;&lt;a href=&#34;https://www.sublimetext.com/buy&#34;&gt;Support Sublime Text&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:buy&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:sublimehaskell&#34;&gt;&lt;a href=&#34;http://github.com/SublimeHaskell/SublimeHaskell&#34;&gt;SublimeHaskell GitHub hosted project&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:sublimehaskell&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
+      <description>My love of functional programming has been getting stronger over the past year so I decided to attend Well-Typed Haskell courses at Skills Matters1. As I&amp;rsquo;m a huge fan of JetBrains IntelliJ IDE I found using Haskell a little lacking in this area (unless you can be online with FP Complete.)
+In this article I will explain how I configured my Haskell development environment using Sublime Text 3 and a few extras.</description>
     </item>
     
   </channel>

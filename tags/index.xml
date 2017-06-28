@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Tony Lawrence</title>
+    <link>http://tonylawrence.com/tags/</link>
+    <description>Recent content in Tags on Tony Lawrence</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
+    
+	<atom:link href="http://tonylawrence.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>

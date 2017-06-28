@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Tony Lawrence</title>
+    <link>http://tonylawrence.com/categories/</link>
+    <description>Recent content in Categories on Tony Lawrence</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&amp;copy; &lt;a href=&#34;https://github.com/tonyklawrence&#34;&gt;Tony Lawrence&lt;/a&gt; 2017 - Waffly Bollocks</copyright>
+    <lastBuildDate>Sun, 16 Sep 2012 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://tonylawrence.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Backup</title>
+      <link>http://tonylawrence.com/categories/backup/</link>
+      <pubDate>Sun, 16 Sep 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/backup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Functional_programming</title>
+      <link>http://tonylawrence.com/categories/functional_programming/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/functional_programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Haskell</title>
+      <link>http://tonylawrence.com/categories/haskell/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/haskell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Homebrew</title>
+      <link>http://tonylawrence.com/categories/homebrew/</link>
+      <pubDate>Tue, 31 Dec 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/homebrew/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>http://tonylawrence.com/categories/java/</link>
+      <pubDate>Wed, 15 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Octopress</title>
+      <link>http://tonylawrence.com/categories/octopress/</link>
+      <pubDate>Thu, 02 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/octopress/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Osx</title>
+      <link>http://tonylawrence.com/categories/osx/</link>
+      <pubDate>Tue, 31 Dec 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/osx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Readynas</title>
+      <link>http://tonylawrence.com/categories/readynas/</link>
+      <pubDate>Sun, 16 Sep 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/readynas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Synology</title>
+      <link>http://tonylawrence.com/categories/synology/</link>
+      <pubDate>Sat, 04 Feb 2017 16:45:28 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/synology/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tdd</title>
+      <link>http://tonylawrence.com/categories/tdd/</link>
+      <pubDate>Wed, 15 Aug 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/tdd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Unix</title>
+      <link>http://tonylawrence.com/categories/unix/</link>
+      <pubDate>Sat, 04 Feb 2017 16:45:28 +0000</pubDate>
+      
+      <guid>http://tonylawrence.com/categories/unix/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
