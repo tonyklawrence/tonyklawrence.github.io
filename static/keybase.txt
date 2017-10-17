@@ -6,46 +6,46 @@ I hereby claim:
 
   * I am an admin of http://tonylawrence.com
   * I am tonylawrence (https://keybase.io/tonylawrence) on keybase.
-  * I have a public key ASCYJ44d5rat8qkQGwr9ks7TFwrxr0D_G9avAu5vSxypYgo
+  * I have a public key ASDTjtFgrNwj3uNzjJWCq9mYYLBt8bQzpHh9ZTmjd0xV6go
 
 To do so, I am signing this object:
 
 {
-    "body": {
-        "key": {
-            "eldest_kid": "0101806b18e61554c71b43eca0c3a5291dc4b91071c5f18c712d2d6876f48d8a29850a",
-            "host": "keybase.io",
-            "kid": "012098278e1de6b6adf2a9101b0afd92ced3170af1af40ff1bd6af02ee6f4b1ca9620a",
-            "uid": "c8feb1996cdbf69cdc74000eced18719",
-            "username": "tonylawrence"
-        },
-        "merkle_root": {
-            "ctime": 1498825936,
-            "hash": "de48fcbdf3e2680c586eda2c8549aa6577938836d79a6025df888d0a1683b8de7d47b1efd223919433cade3afd76bb59ba3df09cdf3560baa6a17c52126d8761",
-            "hash_meta": "35e0e0b82b5d53199b51a362b5782196890bdb9c7c8e827f7ab937ef4c901b94",
-            "seqno": 1203021
-        },
-        "service": {
-            "hostname": "tonylawrence.com",
-            "protocol": "http:"
-        },
-        "type": "web_service_binding",
-        "version": 1
+  "body": {
+    "key": {
+      "eldest_kid": "0120d38ed160acdc23dee3738c9582abd99860b06df1b433a4787d6539a3774c55ea0a",
+      "host": "keybase.io",
+      "kid": "0120d38ed160acdc23dee3738c9582abd99860b06df1b433a4787d6539a3774c55ea0a",
+      "uid": "c8feb1996cdbf69cdc74000eced18719",
+      "username": "tonylawrence"
     },
-    "client": {
-        "name": "keybase.io go client",
-        "version": "1.0.24"
+    "merkle_root": {
+      "ctime": 1508237833,
+      "hash": "871d61712e268fd473080c8ea80ad3d0a8b944171077d988b91e8495632f21afec8d48ab407bf2d9c1c7f9141f84f76ab7c2ded095fcbe9f5c6918b1906e8917",
+      "hash_meta": "674a8423a6325c95d9d624247ab22b262d45182dbdca2e7e99cb11fd606954b1",
+      "seqno": 1590125
     },
-    "ctime": 1498826015,
-    "expire_in": 504576000,
-    "prev": "594de8c81ce261949bc63bd94bd987e90f7a5a517d8bc3030c1345d237fda825",
-    "seqno": 7,
-    "tag": "signature"
+    "service": {
+      "hostname": "tonylawrence.com",
+      "protocol": "http:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.33"
+  },
+  "ctime": 1508237868,
+  "expire_in": 504576000,
+  "prev": "d60240215fce2260b5e773d87aa4f137f90219be3e3e20647ef9e93758e05a33",
+  "seqno": 26,
+  "tag": "signature"
 }
 
 which yields the signature:
 
-hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgmCeOHea2rfKpEBsK/ZLO0xcK8a9A/xvWrwLub0scqWIKp3BheWxvYWTFA0t7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTAxODA2YjE4ZTYxNTU0YzcxYjQzZWNhMGMzYTUyOTFkYzRiOTEwNzFjNWYxOGM3MTJkMmQ2ODc2ZjQ4ZDhhMjk4NTBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwOTgyNzhlMWRlNmI2YWRmMmE5MTAxYjBhZmQ5MmNlZDMxNzBhZjFhZjQwZmYxYmQ2YWYwMmVlNmY0YjFjYTk2MjBhIiwidWlkIjoiYzhmZWIxOTk2Y2RiZjY5Y2RjNzQwMDBlY2VkMTg3MTkiLCJ1c2VybmFtZSI6InRvbnlsYXdyZW5jZSJ9LCJtZXJrbGVfcm9vdCI6eyJjdGltZSI6MTQ5ODgyNTkzNiwiaGFzaCI6ImRlNDhmY2JkZjNlMjY4MGM1ODZlZGEyYzg1NDlhYTY1Nzc5Mzg4MzZkNzlhNjAyNWRmODg4ZDBhMTY4M2I4ZGU3ZDQ3YjFlZmQyMjM5MTk0MzNjYWRlM2FmZDc2YmI1OWJhM2RmMDljZGYzNTYwYmFhNmExN2M1MjEyNmQ4NzYxIiwiaGFzaF9tZXRhIjoiMzVlMGUwYjgyYjVkNTMxOTliNTFhMzYyYjU3ODIxOTY4OTBiZGI5YzdjOGU4MjdmN2FiOTM3ZWY0YzkwMWI5NCIsInNlcW5vIjoxMjAzMDIxfSwic2VydmljZSI6eyJob3N0bmFtZSI6InRvbnlsYXdyZW5jZS5jb20iLCJwcm90b2NvbCI6Imh0dHA6In0sInR5cGUiOiJ3ZWJfc2VydmljZV9iaW5kaW5nIiwidmVyc2lvbiI6MX0sImNsaWVudCI6eyJuYW1lIjoia2V5YmFzZS5pbyBnbyBjbGllbnQiLCJ2ZXJzaW9uIjoiMS4wLjI0In0sImN0aW1lIjoxNDk4ODI2MDE1LCJleHBpcmVfaW4iOjUwNDU3NjAwMCwicHJldiI6IjU5NGRlOGM4MWNlMjYxOTQ5YmM2M2JkOTRiZDk4N2U5MGY3YTVhNTE3ZDhiYzMwMzBjMTM0NWQyMzdmZGE4MjUiLCJzZXFubyI6NywidGFnIjoic2lnbmF0dXJlIn2jc2lnxECPb0R0GjrvCva2WlaZl5kFEHOM6QsZR6l/IdVZOk4nLZ+nanOnHVRwS+Sw+ep6YLpTXwhMG0CLYgpOApPUBvAMqHNpZ190eXBlIKRoYXNogqR0eXBlCKV2YWx1ZcQgEJuRBph8nvkXzLeok+LFahFcs1TncD2r0ehJfItTYxKjdGFnzQICp3ZlcnNpb24B
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEg047RYKzcI97jc4yVgqvZmGCwbfG0M6R4fWU5o3dMVeoKp3BheWxvYWTFA0x7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTIwZDM4ZWQxNjBhY2RjMjNkZWUzNzM4Yzk1ODJhYmQ5OTg2MGIwNmRmMWI0MzNhNDc4N2Q2NTM5YTM3NzRjNTVlYTBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwZDM4ZWQxNjBhY2RjMjNkZWUzNzM4Yzk1ODJhYmQ5OTg2MGIwNmRmMWI0MzNhNDc4N2Q2NTM5YTM3NzRjNTVlYTBhIiwidWlkIjoiYzhmZWIxOTk2Y2RiZjY5Y2RjNzQwMDBlY2VkMTg3MTkiLCJ1c2VybmFtZSI6InRvbnlsYXdyZW5jZSJ9LCJtZXJrbGVfcm9vdCI6eyJjdGltZSI6MTUwODIzNzgzMywiaGFzaCI6Ijg3MWQ2MTcxMmUyNjhmZDQ3MzA4MGM4ZWE4MGFkM2QwYThiOTQ0MTcxMDc3ZDk4OGI5MWU4NDk1NjMyZjIxYWZlYzhkNDhhYjQwN2JmMmQ5YzFjN2Y5MTQxZjg0Zjc2YWI3YzJkZWQwOTVmY2JlOWY1YzY5MThiMTkwNmU4OTE3IiwiaGFzaF9tZXRhIjoiNjc0YTg0MjNhNjMyNWM5NWQ5ZDYyNDI0N2FiMjJiMjYyZDQ1MTgyZGJkY2EyZTdlOTljYjExZmQ2MDY5NTRiMSIsInNlcW5vIjoxNTkwMTI1fSwic2VydmljZSI6eyJob3N0bmFtZSI6InRvbnlsYXdyZW5jZS5jb20iLCJwcm90b2NvbCI6Imh0dHA6In0sInR5cGUiOiJ3ZWJfc2VydmljZV9iaW5kaW5nIiwidmVyc2lvbiI6MX0sImNsaWVudCI6eyJuYW1lIjoia2V5YmFzZS5pbyBnbyBjbGllbnQiLCJ2ZXJzaW9uIjoiMS4wLjMzIn0sImN0aW1lIjoxNTA4MjM3ODY4LCJleHBpcmVfaW4iOjUwNDU3NjAwMCwicHJldiI6ImQ2MDI0MDIxNWZjZTIyNjBiNWU3NzNkODdhYTRmMTM3ZjkwMjE5YmUzZTNlMjA2NDdlZjllOTM3NThlMDVhMzMiLCJzZXFubyI6MjYsInRhZyI6InNpZ25hdHVyZSJ9o3NpZ8RAntnTq4RGrLgULr9TYXxxl4OPkDShJ9LVHmCiz1WCh0AVlyOtz//32zf1jeSDSkpvFb004Iciwrz/NIPi+Ee6AahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIBLqkjSAlVwiG5XJ3758sIbzNTSChKiRozWFUpkJAgTko3RhZ80CAqd2ZXJzaW9uAQ==
 
 And finally, I am proving ownership of this host by posting or
 appending to this document.
