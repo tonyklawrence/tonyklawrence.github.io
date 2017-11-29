@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Pi-Hole inside Docker on Synology | Tony Lawrence</title>
+<link rel="stylesheet" href="http://tonylawrence.com/css/style.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/default.min.css">
+
+
+<section class="section">
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-left">
+        <a class="nav-item" href="http://tonylawrence.com"><h1 class="title is-4">Tony Lawrence</h1></a>
+      </div>
+      <div class="nav-right">
+        <nav class="nav-item level is-mobile">
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-github"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://github.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-bitbucket"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="https://twitter.com/tonyklawrence">
+            <span class="icon">
+              <i class="fa fa-twitter"></i>
+            </span>
+          </a>
+          
+          <a class="level-item" href="/index.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+          </a>
+          
+        </nav>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="subtitle is-6">November 29, 2017</h2>
+    <h1 class="title">Running Pi-Hole inside Docker on Synology</h1>
+    <div class="content">
+      
+
+<p>When I first wrote about installing Pi-Hole inside Docker on my Synology NAS I came up with a solution that required a little modification to the standard DSM (see: <a href="/post/unix/synology/freeing-port-80/">Freeing up port 80 on Synology DSM</a>).  Whilst this worked I was never completely happy with this approach as I never want to modify system files as you can never be sure.</p>
+
+<p>After a little work and a few updates to the Pi-Hole docker image I feel this is now possible without modification.  Below is how I achieve this, enjoy.</p>
+
+<h3 id="running-pi-hole">Running Pi-Hole</h3>
+
+<p>As of 29th November 2017, for this to all work we are required to use the latest development version of the <code>diginc/pi-hole</code> image.  I use the alpine version <code>alpine_dev</code> however I’m sure the debian image is still good.</p>
+
+<blockquote>
+<p>The reason for this is that <a href="https://github.com/diginc">Adam</a> added the ability to specify the port number that the pi-hole admin console listens on allowing us to avoid the already taken port 80 using the environment <code>WEB_PORT</code> (see: <a href="https://github.com/diginc/docker-pi-hole/issues/85#issuecomment-344617940">issue</a>).</p>
+</blockquote>
+
+<p>Once you have created your container from the development image there are a few steps in the docker wizard that are important.</p>
+
+<h4 id="host-networking">Host networking</h4>
+
+<p>Firstly is that we are going to use the same network as the host.  We do this so that Pi-Hole will be receiving the DNS requests direct and not relayed via Docker.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/host-networking.png" />
+    
+    
+</figure>
+
+
+<h4 id="port-settings">Port settings</h4>
+
+<p>As we are sharing the network with the host there are no port mapping requirements.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/port-settings.png" />
+    
+    
+</figure>
+
+
+<h4 id="environment">Environment</h4>
+
+<p>Lastly we configure 3 environment variables.</p>
+
+<ul>
+<li><code>ServerIP</code> is the IP address of your NAS.</li>
+<li><code>DNSMASQ_LISTENING</code> is set to <code>all</code> so that our DNS server will respond.</li>
+<li><code>WEB_PORT</code> is set to any port that you would like the admin console on.  Values in the 8000 range are pretty good.</li>
+</ul>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/environment.png" />
+    
+    
+</figure>
+
+
+<blockquote>
+<p><code>DNSMASQ_LISTENING</code> is required as the image runs <code>dnsmasq</code> listening to the <code>en0</code> interface which does not exist when using host networking on the Synology NAS.  Alternatively you can use the <code>INTERFACE</code> environment variable to be more specific.</p>
+</blockquote>
+
+<h3 id="configuring-webstation">Configuring WebStation</h3>
+
+<p>Pi-Hole will redirect blocked DNS names to the IP of the Synology NAS.  For this to respond we need to install WebStation.  This will run on port 80 and will provide the blank areas where advert would have been seen.</p>
+
+<h4 id="apache">Apache</h4>
+
+<p>As we don’t want to manually modify any of the DSM files we need to run WebStation with the Apache web server instead of nginx.  Install Apache HTTP Server 2.4 using package manager.</p>
+
+<blockquote>
+<p>You can use nginx if you prefer but this would require modifying the nginx.conf file and the possibility of this being overwritten or causing damage.</p>
+</blockquote>
+
+<p>In the WebStation application you should be able to see that Apache 2.4 is installed.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/webstation-status.png" />
+    
+    
+</figure>
+
+
+<p>Next in the general settings make sure that we select Apache as the back-end server.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/webstation-settings.png" />
+    
+    
+</figure>
+
+
+<h4 id="webstation-files">WebStation files</h4>
+
+<p>WebStation will process requests on port 80 however most of these will not be valid paths that the Synology is expected (due to Pi-Hole mis-directing these requests) and therefore will respond with <code>404</code> file not found errors.  It’s ok but not ideal.  We can fix this (and this is the reason for Apache).</p>
+
+<p>WebStation hosts files from <code>/volume1/web</code> so we need to create a new file named <code>.htaccess</code> (note the leading .) which contains the following.</p>
+
+<pre><code>ErrorDocument 404 /blocked-by-pihole.svg
+ErrorDocument 500 /blocked-by-pihole.svg
+</code></pre>
+
+<p>This is now telling Apache that if you can’t find a file (will be most of the time due to Pi-Hole) then instead return the image <code>blocked-by-pihole.svg</code>.</p>
+
+<p>And lastly place an image in the same place named <code>blocked-by-pihole.svg</code>.</p>
+
+<blockquote>
+<p>You can use whatever image you want but be sure to update the <code>.htaccess</code> correctly.</p>
+</blockquote>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/webstation-root.png" />
+    
+    
+</figure>
+
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>I hope you didn’t find this too daunting, it’s a few steps that makes Pi-Hole behave correctly on the Synology NAS running in a Docker container.  This correctly shows all client IP’s so I’m very happy.</p>
+
+<p>As always, feel free to comment or ask for clarification.</p>
+
+<p>Lastly, the image I used was downloaded from the <a href="https://github.com/WaLLy3K/Pi-hole-Block-Page">Pi-Hole Block Page Project</a></p>
+
+
+<figure >
+    
+        <img src="https://camo.githubusercontent.com/051550932e6840433baaa5d8091c432ef2546941/68747470733a2f2f77616c6c79336b2e6769746875622e696f2f7374796c652f626c6f636b65642e737667" />
+    
+    
+</figure>
+
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <aside><div id="disqus_thread"></div></aside>
+    <script type="text/javascript">
+      var disqus_shortname = 'tonylawrence';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container has-text-centered">
+    <p>&copy; <a href="https://github.com/tonyklawrence">Tony Lawrence</a> 2017 - Waffly Bollocks</p>
+  </div>
+</section>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/java.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/kotlin.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/bash.min.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/haskell.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+
