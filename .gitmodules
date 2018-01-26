@@ -12,4 +12,4 @@
 	branch = master
 [submodule "themes/hemingway"]
 	path = themes/hemingway
-	url = https://github.com/tanksuzuki/hemingway.git
+	url = https://github.com/tonyklawrence/hemingway.git
