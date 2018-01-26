@@ -55,19 +55,17 @@
     <div class="content">
       
 
+<blockquote>
+<p><strong>Update</strong> This post was updated in January 2018 and details how to get the Debian version of pihole-docker running as the Alpine version is no longer supported.</p>
+</blockquote>
+
 <p>When I first wrote about installing Pi-Hole inside Docker on my Synology NAS I came up with a solution that required a little modification to the standard DSM (see: <a href="/post/unix/synology/freeing-port-80/">Freeing up port 80 on Synology DSM</a>).  Whilst this worked I was never completely happy with this approach as I never want to modify system files as you can never be sure.</p>
 
 <p>After a little work and a few updates to the Pi-Hole docker image I feel this is now possible without modification.  Below is how I achieve this, enjoy.</p>
 
 <h3 id="running-pi-hole">Running Pi-Hole</h3>
 
-<p>As of 29th November 2017, for this to all work we are required to use the latest development version of the <code>diginc/pi-hole</code> image.  I use the alpine version <code>alpine_dev</code> however I’m sure the debian image is still good.</p>
-
-<blockquote>
-<p>The reason for this is that <a href="https://github.com/diginc">Adam</a> added the ability to specify the port number that the pi-hole admin console listens on allowing us to avoid the already taken port 80 using the environment <code>WEB_PORT</code> (see: <a href="https://github.com/diginc/docker-pi-hole/issues/85#issuecomment-344617940">issue</a>).</p>
-</blockquote>
-
-<p>Once you have created your container from the development image there are a few steps in the docker wizard that are important.</p>
+<p>I originally used the Alpine version of this image due to it being smaller, however, as this is no longer maintained we will install the latest Debian version.  Once you have created your container from the latest tagged image there are a few steps in the docker wizard that are important.</p>
 
 <h4 id="host-networking">Host networking</h4>
 
@@ -95,15 +93,41 @@
 </figure>
 
 
+<h4 id="volumes">Volumes</h4>
+
+<p>The latest image of Debian requires that the name servers configured has localhost first otherwise pihole fails to startup.  The official way to do this is to specify the <code>--dns 127.0.0.1</code> during the docker run startup however as we are using the Synology UI we are unable to do this.</p>
+
+<p>My work around was to create my own file named <code>resolv.conf</code> and map this as a volume over the one inside the pihole container.</p>
+
+
+<figure >
+    
+        <img src="/images/unix/synology/volume-settings.png" />
+    
+    
+</figure>
+
+
+<p>The file contains (using googles dns servers):</p>
+
+<pre><code>namserver 127.0.0.1
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+</code></pre>
+
 <h4 id="environment">Environment</h4>
 
 <p>Lastly we configure 3 environment variables.</p>
 
 <ul>
 <li><code>ServerIP</code> is the IP address of your NAS.</li>
-<li><code>DNSMASQ_LISTENING</code> is set to <code>all</code> so that our DNS server will respond.</li>
+<li><code>DNSMASQ_LISTENING</code> is set to <code>local</code> so that our DNS server will respond.</li>
 <li><code>WEB_PORT</code> is set to any port that you would like the admin console on.  Values in the 8000 range are pretty good.</li>
 </ul>
+
+<blockquote>
+<p>An optional 4th can be <code>WEB_PASSWORD</code> which allows you to set the password used in the UI.</p>
+</blockquote>
 
 
 <figure >
@@ -178,6 +202,12 @@ ErrorDocument 500 /blocked-by-pihole.svg
     
 </figure>
 
+
+<p>As requested in the comments below I have created a ZIP file containing the image and the <code>.htaccess</code> file which can be downloaded here:</p>
+
+<p><a href="/downloads/pihole/web.zip">download it here</a></p>
+
+<p>Extract this into your <code>/volume1/web</code> folder.</p>
 
 <h3 id="conclusion">Conclusion</h3>
 
