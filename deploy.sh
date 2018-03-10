@@ -20,7 +20,7 @@ fi
 git commit -m "$msg"
 
 # Push source and build repos.
-git push origin HEAD:master
+git push origin master
 
 # Come Back
 cd ..

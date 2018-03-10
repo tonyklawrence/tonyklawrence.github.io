@@ -51,7 +51,7 @@ Lastly we configure 3 environment variables.
 * `DNSMASQ_LISTENING` is set to `local` so that our DNS server will respond.
 * `WEB_PORT` is set to any port that you would like the admin console on.  Values in the 8000 range are pretty good.
 
-> An optional 4th can be `WEB_PASSWORD` which allows you to set the password used in the UI.
+> An optional 4th can be `WEBPASSWORD` which allows you to set the password used in the UI.
 
 {{< figure src="/images/unix/synology/environment.png" >}}
 
