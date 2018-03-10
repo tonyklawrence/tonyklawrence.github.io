@@ -60,7 +60,7 @@
 <p>So far everything has been easy to configure, launching docker containers a breeze and has generally been a great experience; apart from 1 little thing.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/synology-ds916&#43;.png" />
     
@@ -131,7 +131,7 @@
 <p>Make this change in all 3 files replacing occurrences of <code>80</code> with your chosen port.  Now what we have done here is changed the template used to generate the Nginx configuration files, not the configuration files themselves.  So we now need to force a rebuild of these.  There is probably a terminal command to do this but I have not yet found this out.  What you can do is change any of the settings from the control panel UI and save.  This will trigger the rebuild and restart of the web server.  You can always change back the setting afterwards.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/control-panel.png" />
     
@@ -150,7 +150,7 @@
 <p>So now that you have port <code>80</code> to do with what you want, let’s set this up to forward all requests to a docker container.  We can do this using the reverse proxy tab in the ‘Application Portal’ section.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/reverse-proxy.png" />
     
@@ -161,7 +161,7 @@
 <p>What I have defined above is a rule that all traffic that going to my Synology on port <code>80</code> will be forwarded onto port <code>8080</code>.  This port <code>8080</code> is then mapped in docker to my pi-hole containers port <code>80</code>.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/reverse-proxy-rules.png" />
     
@@ -211,7 +211,7 @@
 <p>This is just for the security conscious.  If you run security advisor regularly and have it to check for modified files, you will see the following warning.  Don’t worry, it’s not wrong as we have modified this file.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/security-warning.png" />
     

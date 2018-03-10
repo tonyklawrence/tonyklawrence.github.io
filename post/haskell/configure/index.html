@@ -55,13 +55,13 @@
     <div class="content">
       
 
-<p>My love of functional programming has been getting stronger over the past year so I decided to attend <a href="http://www.well-typed.com/">Well-Typed</a> Haskell courses at Skills Matters<sup class="footnote-ref" id="fnref:wt"><a rel="footnote" href="#fn:wt">1</a></sup>.  As I&rsquo;m a huge fan of JetBrains <a href="http://www.jetbrains.com/idea/">IntelliJ</a> IDE I found using Haskell a little lacking in this area (unless you can be online with <a href="http://www.fpcomplete.com/">FP Complete</a>.)</p>
+<p>My love of functional programming has been getting stronger over the past year so I decided to attend <a href="http://www.well-typed.com/">Well-Typed</a> Haskell courses at Skills Matters<sup class="footnote-ref" id="fnref:wt"><a href="#fn:wt">1</a></sup>.  As I&rsquo;m a huge fan of JetBrains <a href="http://www.jetbrains.com/idea/">IntelliJ</a> IDE I found using Haskell a little lacking in this area (unless you can be online with <a href="http://www.fpcomplete.com/">FP Complete</a>.)</p>
 
 <p>In this article I will explain how I configured my Haskell development environment using Sublime Text 3 and a few extras.</p>
 
 <!-- more -->
 
-<h2 id="installing-haskell-via-homebrew-brew">Installing Haskell (via Homebrew<sup class="footnote-ref" id="fnref:brew"><a rel="footnote" href="#fn:brew">2</a></sup>)</h2>
+<h2 id="installing-haskell-via-homebrew-brew">Installing Haskell (via Homebrew<sup class="footnote-ref" id="fnref:brew"><a href="#fn:brew">2</a></sup>)</h2>
 
 <p>If you need to, take a look at my post on how to <a href="/2013/12/31/installing-homebrew-on-osx-mavericks/">Install Homebrew</a>.  It&rsquo;s not actually very hard at all.</p>
 
@@ -130,7 +130,7 @@ Leaving GHCi.
 <p>Sublime Text 3 is currently still in beta.  I have been using it for a while and have not come across any problems which is why I can highly recommend giving it a go.  It can be downloaded from <a href="http://www.sublimetext.com/3">http://www.sublimetext.com/3</a>.  Once downloaded, open the DMG file and copy to your Applications folder.  On starting you will be greeted with the following:</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/haskell/sublime-text-3.png" />
     
@@ -138,7 +138,7 @@ Leaving GHCi.
 </figure>
 
 
-<p>If you like sublime please purchase a license to allow the developers to keep supporting this great application<sup class="footnote-ref" id="fnref:buy"><a rel="footnote" href="#fn:buy">3</a></sup>.</p>
+<p>If you like sublime please purchase a license to allow the developers to keep supporting this great application<sup class="footnote-ref" id="fnref:buy"><a href="#fn:buy">3</a></sup>.</p>
 
 <h2 id="configuring-sublime-text-for-haskell">Configuring Sublime Text for Haskell</h2>
 
@@ -162,7 +162,7 @@ Package Control: No updated packages
 
 <h3 id="installing-sublimehaskell-package">Installing SublimeHaskell Package</h3>
 
-<p>SublimeHaskell<sup class="footnote-ref" id="fnref:sublimehaskell"><a rel="footnote" href="#fn:sublimehaskell">4</a></sup> is a github hosted project which adds support for many things.  I mainly use it to auto-compile the edited file on save and easily running a Haskell program from the editor.  Full instructions are available at the <a href="http://github.com/SublimeHaskell/SublimeHaskell">SublimeHaskell</a> project site.  Below I will show how I got everything working.</p>
+<p>SublimeHaskell<sup class="footnote-ref" id="fnref:sublimehaskell"><a href="#fn:sublimehaskell">4</a></sup> is a github hosted project which adds support for many things.  I mainly use it to auto-compile the edited file on save and easily running a Haskell program from the editor.  Full instructions are available at the <a href="http://github.com/SublimeHaskell/SublimeHaskell">SublimeHaskell</a> project site.  Below I will show how I got everything working.</p>
 
 <p>There are a few packages that need to be installed for this package to work.  Using <code>cabal</code> makes this easy (although it might take a while.</p>
 
@@ -172,7 +172,7 @@ Package Control: No updated packages
 <p>Now, to install the package in Sublime Text 3 you can type <code>cmd-shift-P</code> to open up the search window.  Type in <code>install</code> to locate the install package option and select it.  You should see  in the status bar that it is going to the repository to find available packages.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/haskell/install-package.png" />
     
@@ -183,7 +183,7 @@ Package Control: No updated packages
 <p>Next type in <code>haskell</code> to locate the SublimeHaskell package and select it.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/haskell/install-sublimehaskell.png" />
     
@@ -207,7 +207,7 @@ Package Control: No updated packages
 <p>You can now enter your Haskell code into Sublime Text, make sure you have the Haskell build system selected and then type <code>cmd-B</code> to save, build and execute the code!</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/haskell/haskell-program.png" />
     

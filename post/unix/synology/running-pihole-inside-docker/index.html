@@ -64,8 +64,7 @@
 <p>After a little work and a few updates to the Pi-Hole docker image I feel this is now possible without modification.  Below is how I achieve this, enjoy.</p>
 
 <blockquote>
-<p>All information relating to the pi-hole docker image and extra configuration can be found on it’s home page.
-<a href="https://github.com/diginc/docker-pi-hole">https://github.com/diginc/docker-pi-hole</a></p>
+<p>All information relating to the pi-hole docker image and extra configuration can be found on it’s home page. <a href="https://github.com/diginc/docker-pi-hole">https://github.com/diginc/docker-pi-hole</a></p>
 </blockquote>
 
 <h3 id="running-pi-hole">Running Pi-Hole</h3>
@@ -77,7 +76,7 @@
 <p>Firstly is that we are going to use the same network as the host.  We do this so that Pi-Hole will be receiving the DNS requests direct and not relayed via Docker.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/host-networking.png" />
     
@@ -90,7 +89,7 @@
 <p>As we are sharing the network with the host there are no port mapping requirements.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/port-settings.png" />
     
@@ -105,7 +104,7 @@
 <p>My work around was to create my own file named <code>resolv.conf</code> and map this as a volume over the one inside the pihole container.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/volume-settings.png" />
     
@@ -115,7 +114,7 @@
 
 <p>The file contains (using googles dns servers):</p>
 
-<pre><code>nameserver 127.0.0.1
+<pre><code>namserver 127.0.0.1
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 </code></pre>
@@ -131,11 +130,11 @@ nameserver 8.8.4.4
 </ul>
 
 <blockquote>
-<p>An optional 4th can be <code>WEB_PASSWORD</code> which allows you to set the password used in the UI.</p>
+<p>An optional 4th can be <code>WEBPASSWORD</code> which allows you to set the password used in the UI.</p>
 </blockquote>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/environment.png" />
     
@@ -162,7 +161,7 @@ nameserver 8.8.4.4
 <p>In the WebStation application you should be able to see that Apache 2.4 is installed.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/webstation-status.png" />
     
@@ -173,7 +172,7 @@ nameserver 8.8.4.4
 <p>Next in the general settings make sure that we select Apache as the back-end server.</p>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/webstation-settings.png" />
     
@@ -200,7 +199,7 @@ ErrorDocument 500 /blocked-by-pihole.svg
 </blockquote>
 
 
-<figure >
+<figure>
     
         <img src="/images/unix/synology/webstation-root.png" />
     
@@ -223,7 +222,7 @@ ErrorDocument 500 /blocked-by-pihole.svg
 <p>Lastly, the image I used was downloaded from the <a href="https://github.com/WaLLy3K/Pi-hole-Block-Page">Pi-Hole Block Page Project</a></p>
 
 
-<figure >
+<figure>
     
         <img src="https://camo.githubusercontent.com/051550932e6840433baaa5d8091c432ef2546941/68747470733a2f2f77616c6c79336b2e6769746875622e696f2f7374796c652f626c6f636b65642e737667" />
     
@@ -232,7 +231,7 @@ ErrorDocument 500 /blocked-by-pihole.svg
 
 
 <blockquote>
-<p>As of Pi-Hole 3.2 the separate Block Page project has been discontinued as custom pages have been rolled into Pi-Hole itself.  We don’t need this project as WebStation is our block page server but we can still use the image.</p>
+<p>As of Pi-Hole 3.2 the separate Block Page project has been discontinued as custom pages have been rolled into Pi-Hole itself. We don’t need this project as WebStation is our block page server but we can still use the image.</p>
 </blockquote>
 
     </div>
