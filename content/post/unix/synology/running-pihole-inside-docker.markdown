@@ -12,6 +12,8 @@ When I first wrote about installing Pi-Hole inside Docker on my Synology NAS I c
 
 After a little work and a few updates to the Pi-Hole docker image I feel this is now possible without modification.  Below is how I achieve this, enjoy.
 
+> All information relating to the pi-hole docker image and extra configuration can be found on it’s home page. https://github.com/diginc/docker-pi-hole
+
 ### Running Pi-Hole
 
 I originally used the Alpine version of this image due to it being smaller, however, as this is no longer maintained we will install the latest Debian version.  Once you have created your container from the latest tagged image there are a few steps in the docker wizard that are important.  
@@ -109,3 +111,5 @@ As always, feel free to comment or ask for clarification.
 Lastly, the image I used was downloaded from the [Pi-Hole Block Page Project](https://github.com/WaLLy3K/Pi-hole-Block-Page) 
 
 {{< figure src="https://camo.githubusercontent.com/051550932e6840433baaa5d8091c432ef2546941/68747470733a2f2f77616c6c79336b2e6769746875622e696f2f7374796c652f626c6f636b65642e737667" >}}
+
+> As of Pi-Hole 3.2 the separate Block Page project has been discontinued as custom pages have been rolled into Pi-Hole itself. We don’t need this project as WebStation is our block page server but we can still use the image.
