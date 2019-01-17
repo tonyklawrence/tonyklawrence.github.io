@@ -6,6 +6,8 @@ slug: running-pihole-inside-docker
 categories: [unix, synology]
 keywords: “unix, nas, synology, docker, pihole”
 ---
+> ** Update 2 ** I’ve created a new post which shows a different method, the one that I currently use. [Free your Synology ports for Docker](/post/unix/synology/free-your-synology-ports//))
+
 > **Update** This post was updated in January 2018 and details how to get the Debian version of pihole-docker running as the Alpine version is no longer supported.
 
 When I first wrote about installing Pi-Hole inside Docker on my Synology NAS I came up with a solution that required a little modification to the standard DSM (see: [Freeing up port 80 on Synology DSM](/post/unix/synology/freeing-port-80/)).  Whilst this worked I was never completely happy with this approach as I never want to modify system files as you can never be sure.
@@ -41,7 +43,7 @@ My work around was to create my own file named `resolv.conf` and map this as a v
 The file contains (using googles dns servers):
 
 ```
-namserver 127.0.0.1
+nameserver 127.0.0.1
 nameserver 8.8.8.8
 nameserver 8.8.4.4
 ```
